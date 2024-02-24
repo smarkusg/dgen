@@ -196,10 +196,6 @@ void ram_load(md& megad)
 	FILE *load;
 	int ret;
 	static char wm_title [ 512 ] ;
-
-	if (!megad.has_save_ram())
-		return;
-	load = dgen_fopen("ram", megad.romname, DGEN_READ);
 #ifdef __AMIGAOS4__
        /*markus - dodaje tu - wim ze rom zaladowany i prosty dostep do nazwy fixme */
        strcpy(wm_title, AMIGA_VERSION);
@@ -207,6 +203,9 @@ void ram_load(md& megad)
        strcat(wm_title, megad.romname);
        SDL_WM_SetCaption(wm_title ,"" );
 #endif
+	if (!megad.has_save_ram())
+		return;
+	load = dgen_fopen("ram", megad.romname, DGEN_READ);
 	if (load == NULL)
 		goto fail;
 	ret = megad.get_save_ram(load);
@@ -287,11 +286,8 @@ int main(int argc, char *argv[])
      AmigaOS_ParseArg(argc, argv, &new_argc, &new_argv);
         /* nie wybrano nic z wyboru pliku */
         if (new_argc==0 && new_argv==NULL)
-        {
-//               EasyRequester("can't open ROM file",
-//                          "Cancel");
           return 0;
-        }
+
     argc=new_argc;
     argv=new_argv;
     }
@@ -556,8 +552,6 @@ next_rom:
 			megad->init_sound();
 		}
 	}
-
-//lol
 
 	// Load up save RAM
 	ram_load(*megad);
