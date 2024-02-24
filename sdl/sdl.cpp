@@ -22,6 +22,7 @@
 
 #ifdef __AMIGAOS4__
 #include "../debug.h"
+#include "savepng.h"
 #endif
 
 #ifdef WITH_OPENGL
@@ -1451,6 +1452,7 @@ static void do_screenshot(md& megad)
 		pitch = screen.pitch;
 		line = screen.buf;
 	}
+
 	switch (bpp) {
 	case 15:
 	case 16:
@@ -1468,6 +1470,19 @@ static void do_screenshot(md& megad)
 		memcpy(romname_old, megad.romname, sizeof(romname_old));
 		n = 0;
 	}
+
+/* pngscreenshots  dont need open anyfile */ 
+#ifdef __AMIGAOS4__
+	snprintf(name, sizeof(name), "PROGDIR:DgenConf/screenshots/%s.png",
+		 ((megad.romname[0] == '\0') ? "unknown" : megad.romname), n);
+	fp = dgen_fopen("screenshots", name, DGEN_APPEND);
+	if (fp == NULL) {
+		pd_message("Can't open %s.", name);
+		return;
+	}
+	fclose(fp);
+	remove (name);
+#else
 retry:
 	snprintf(name, sizeof(name), "%s-%06u.tga",
 		 ((megad.romname[0] == '\0') ? "unknown" : megad.romname), n);
@@ -1522,6 +1537,7 @@ retry:
 		if (!fwrite(tmp, sizeof(tmp), 1, fp))
 			goto error;
 	}
+
 	// Data
 	switch (bpp) {
 		unsigned int y;
@@ -1562,7 +1578,7 @@ retry:
 		}
 		break;
 	case 24:
-		for (y = 0; (y < height); ++y) {
+		for (y = height; (y > 0); --y) {
 			if (screen_lock())
 				goto error;
 #ifdef WORDS_BIGENDIAN
@@ -1600,14 +1616,26 @@ retry:
 		}
 		break;
 	}
+
+#endif //__AMIGAOS4__ pngscreenshots
+#ifdef __AMIGAOS4__
+	SDL_Surface *tmp = SDL_PNGFormatAlpha(screen.surface);
+	SDL_SavePNG(tmp, name);
+	SDL_FreeSurface(tmp);
+        pd_message("Screenshot written to %s.", name);
+	return;
+#else
 	pd_message("Screenshot written to %s.", name);
 	free(out);
 	fclose(fp);
 	return;
+
 error:
 	pd_message("Error while generating screenshot %s.", name);
 	free(out);
 	fclose(fp);
+#endif
+
 }
 
 /**

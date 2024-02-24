@@ -77,7 +77,7 @@ libpd_a_AR = $(AR) $(ARFLAGS)
 libpd_a_LIBADD =
 am__objects_1 = dgenfont_16x26.$(OBJEXT) dgenfont_8x13.$(OBJEXT) \
 	dgenfont_7x5.$(OBJEXT)
-am_libpd_a_OBJECTS = font.$(OBJEXT) sdl.$(OBJEXT) prompt.$(OBJEXT) \
+am_libpd_a_OBJECTS = font.$(OBJEXT) sdl.$(OBJEXT) prompt.$(OBJEXT) savepng.$(OBJEXT)\
 	$(am__objects_1)
 libpd_a_OBJECTS = $(am_libpd_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -265,6 +265,8 @@ libpd_a_SOURCES = \
 	pd-defs.h	\
 	prompt.h	\
 	prompt.c	\
+	savepng.h	\
+	savepng.c	\
 	splash.h	\
 	$(BUILT_SOURCES)
 
@@ -324,6 +326,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dgenfont_8x13.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/font.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prompt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/savepng.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sdl.Po@am__quote@
 
 .c.o:
