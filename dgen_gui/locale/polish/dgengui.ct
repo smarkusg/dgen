@@ -1,0 +1,80 @@
+## version $VER: dgengui.catalog 1.1 (25.02.2024)
+## codeset 5
+## language polish
+## chunk AUTH Translated by smarkusg
+;
+MSG_ERROR_NOROMS
+Nie znaleziono roms.
+; No roms found.
+;
+MSG_ERROR_REQUIRED
+Nie mo¿na znale¶æ wymaganej biblioteki/klasy.
+; Couldn't find required library/classes.
+;
+MSG_ERROR_ROMDRAWER
+\033cNie uda³o siê za³adowaæ szuflady z plikami ROM\n%s.
+; \033cFailed to load ROM drawer:\n%s.
+;
+MSG_ERROR_LAUNCHING
+B³±d uruchamiania pliku wykonywalnego dgen!
+; Error launching dgen executable!
+;
+MSG_ERROR_GUI_NOPREVIEW
+Podgl±d niedostêpny
+; Preview not available
+;
+MSG_OK_GAD
+_OK
+; _OK
+;
+MSG_GUI_ABOUT_TEXT
+\033c\033b%s %s\033n\n\n\
+GUI dla Dgen autorstwa Javier de las Rivas\n\n\
+Podziêkowania: kas1e, samo79, \n\
+smarkusg i wszyscy o któch zapomniano wspomieæ.
+;
+; \033c\033b%s %s\033n\n\n\
+; GUI for DGen, OS4 port by Marek Glogowski\n\n\
+; Acknowlegdments: kas1e, samo79,\n\
+; smarkusg and everyone I forget.
+;
+MSG_GUI_TITLE_COL_ROM
+Gra
+; Game
+;
+MSG_GUI_TITLE_COL_FMT
+Format
+; Format
+;
+MSG_GUI_ROMDRAWER
+_ROMY:
+;  _ROMS:
+;
+MSG_GUI_ROMDRAWER_TITLE
+Wybierz szufladê z plikami ROM
+; Select ROMs drawer
+;
+MSG_GUI_TOTALROMS
+%ld dostepne pliki rom
+;  %ld roms availables
+;
+MSG_GUI_SAVESTATES
+Za³aduj zapisane sloty
+;  Load saved slot
+;
+MSG_GUI_SAVESTATES_NO
+Nie
+; No
+;
+MSG_GUI_ABOUT_BTN
+_O Programie
+; _About
+;
+MSG_GUI_SAVE_BTN
+_Zapisz ustawienia
+; _Save settings
+;
+MSG_GUI_QUIT_BTN
+_Wyj¶cie
+; _Quit
+;

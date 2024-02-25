@@ -1,0 +1,75 @@
+## version $VER: XX.catalog XX.XX (XX.XX.20XX)
+## codeset X
+## language X
+;
+MSG_ERROR_NOROMS
+
+; No roms found.
+;
+MSG_ERROR_REQUIRED
+
+; Couldn't find required library/classes.
+;
+MSG_ERROR_ROMDRAWER
+
+; \033cFailed to load ROM drawer:\n%s.
+;
+MSG_ERROR_LAUNCHING
+
+; Error launching dgen executable!
+;
+MSG_ERROR_GUI_NOPREVIEW
+
+; Preview not available
+;
+MSG_OK_GAD
+
+; _OK
+;
+MSG_GUI_ABOUT_TEXT
+
+; \033c\033b%s %s\033n\n\n\
+; GUI for DGen, OS4 port by Marek Glogowski\n\n\
+; Acknowlegdments: kas1e, samo79,\n\
+; smarkusg and everyone I forget.
+;
+MSG_GUI_TITLE_COL_ROM
+
+; Game
+;
+MSG_GUI_TITLE_COL_FMT
+
+; Format
+;
+MSG_GUI_ROMDRAWER
+
+;  _ROMS:
+;
+MSG_GUI_ROMDRAWER_TITLE
+
+; Select ROMs drawer
+;
+MSG_GUI_TOTALROMS
+
+;  %ld roms availables
+;
+MSG_GUI_SAVESTATES
+
+;  Load saved slot
+;
+MSG_GUI_SAVESTATES_NO
+
+; No
+;
+MSG_GUI_ABOUT_BTN
+
+; _About
+;
+MSG_GUI_SAVE_BTN
+
+; _Save settings
+;
+MSG_GUI_QUIT_BTN
+
+; _Quit
+;
