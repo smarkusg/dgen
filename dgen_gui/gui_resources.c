@@ -8,6 +8,10 @@ struct LocaleInfo li;
 #include "debug.h"
 
 
+#define FILENAME_LENGTH   1024 // LaunchRom() and ShowPreview()
+#define MAX_FULLFILEPATH  MAX_DOS_PATH+MAX_DOS_FILENAME // GetRoms()
+
+
 extern int32 beginCommand(char *romfile);
 
 
@@ -214,7 +218,6 @@ uint32 DoMessage(char *message, char reqtype, STRPTR buttons)
 	return button;
 }
 
-#define MAX_FULLFILEPATH MAX_DOS_PATH+MAX_DOS_FILENAME
 int32 GetRoms(STRPTR romsdir, struct List *list)
 {
 	APTR context;
@@ -225,7 +228,6 @@ int32 GetRoms(STRPTR romsdir, struct List *list)
 	       romfullpath = IExec->AllocVecTags(MAX_FULLFILEPATH, AVT_ClearWithValue,0, TAG_DONE);
 DBUG("GetRoms() '%s'\n",romsdir);
 	IDOS->ParsePatternNoCase("#?.(zip|smd|bin|md)", pattern_ms, 64);
-
 	IUtility->Strlcpy(romfullpath, ROMS, MAX_FULLFILEPATH);
 	IDOS->AddPart(romfullpath, romsdir, MAX_FULLFILEPATH);
 	context = IDOS->ObtainDirContextTags(EX_StringNameInput, romfullpath,
@@ -425,65 +427,26 @@ DBUG("SaveToolType() - END\n",NULL);
 	return i;
 }
 
-#define FILENAME_LENGTH 1024
-void LaunchRom(struct DGenGUI *dgg)
-{
-	uint32 res_n;
-	STRPTR res_s = NULL, res_e = NULL, filename;
-	char rom_ext[5] = ".";
-
-	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), (uint32 *)&res_n);
-	if(res_n == 0) { return; }
-
-	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE),
-
-	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
-	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_FMT, LBNCA_Text,&res_e, TAG_DONE );
-DBUG("res_n=0x%08lx -> res_s='%s' (res_e='%s')\n",res_n,res_s,res_e);
-	IUtility->Strlcpy(filename, ROMS, FILENAME_LENGTH);
-	IUtility->Strlcat( rom_ext, res_e, sizeof(rom_ext) );
-
-	IDOS->AddPart(filename, ROMS, FILENAME_LENGTH);
-	// LAUNCH ROM
-	IDOS->AddPart(filename, res_s, FILENAME_LENGTH);       // add ROM filename
-	IUtility->Strlcat(filename, rom_ext, FILENAME_LENGTH); // add extension
-DBUG("Starting ROM '%s'...\n",filename);
-
-DBUG("WM_CLOSE (win=0x%08lx)\n",dgg->win);
-	IIntuition->IDoMethod(OBJ(OID_MAIN), WM_CLOSE);
-	dgg->win = NULL;
-	if(beginCommand(filename) != 0) {
-		DoMessage( (STRPTR)GetString(&li,MSG_ERROR_LAUNCHING), REQIMAGE_ERROR, NULL ); //"Error launching 'snes9x-sdl'!"
-	}
-	if( (dgg->win=(struct Window *)IIntuition->IDoMethod(OBJ(OID_MAIN), WM_OPEN, NULL)) ) {
-DBUG("WM_OPEN (win=0x%08lx)\n",dgg->win);
-		dgg->screen = dgg->win->WScreen;
-		IIntuition->ScreenToFront(dgg->screen);
-DBUG("dgg->wbs = 0x%08lx\n",dgg->wbs);
-		if(dgg->wbs) {
-			IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Selected,&dgg->myTT.last_rom_run, TAG_DONE);
-			IUtility->SNPrintf(rom_ext, sizeof(rom_ext), "%ld",dgg->myTT.last_rom_run); // using 'rom_ext' as temp buffer
-			SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "LAST_ROM_LAUNCHED", rom_ext);
-		}
-	}
-
-	IExec->FreeVec(filename);
-}
-
-void free_chooserlist_nodes(struct List *list)
+/*void free_chooserlist_nodes(struct List *list)
 {
 	struct Node *nextnode, *node = IExec->GetHead(list);
-DBUG("free_chooserlist_nodes() 0x%08lx (0x%08lx)\n",node,list);
+DBUG("free_chooserlist_nodes()\n",NULL);
 	while(node)
 	{
+//DBUG(" node = 0x%08lx\n",node);
 		nextnode = IExec->GetSucc(node);
+		IExec->Remove(node);
 		IChooser->FreeChooserNode(node);
 		node = nextnode;
-//DBUG(" nextnode = 0x%08lx\n",node);
 	}
+}*/
+void free_chooserlist_nodes(struct List *list)
+{
+	struct Node *node;
 
-	IExec->FreeSysObject(ASOT_LIST, list);
-	list = IExec->AllocSysObject(ASOT_LIST, NULL);
+	while( (node=IExec->RemTail(list)) ) {
+		IChooser->FreeChooserNode(node);
+	}
 }
 
 void GetSavestates(struct DGenGUI *dgg, STRPTR fn)
@@ -499,8 +462,7 @@ DBUG("  searching '%s':\n",filestate);
 
 	// Detach chooser list
 	IIntuition->SetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Labels,0, TAG_DONE);
-
-	// Remove previous rom savestates list..
+	// Remove previous rom savestates chooser list..
 	free_chooserlist_nodes(dgg->savestates_list);
 	//..and generate new
 	node = IChooser->AllocChooserNode(CNA_Text,GetString(&li,MSG_GUI_SAVESTATES_NO), TAG_DONE);
@@ -508,7 +470,6 @@ DBUG("  searching '%s':\n",filestate);
 
 	// Search selected/active rom savestates
 	IDOS->ParsePatternNoCase(filestate, pattern_ms, 2+MAX_DOS_FILENAME*2);
-
 	context = IDOS->ObtainDirContextTags(EX_StringNameInput, SAVES,
 	                                     EX_DataFields, (EXF_NAME|EXF_TYPE),
 	                                     EX_MatchString, pattern_ms,
@@ -548,7 +509,7 @@ void ShowPreview(struct DGenGUI *dgg)
 	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), (uint32 *)&res_n);
 	if(res_n == 0) { return; }
 
-	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE),
+	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE);
 
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
 DBUG("res_n=0x%08lx -> res_s='%s'\n",res_n,res_s);
@@ -562,12 +523,61 @@ DBUG("PREVIEW: '%s'\n",filename);
 	if(updateButtonImage(filename, NULL, OID_PREVIEW_BTN, dgg->win) == FALSE) // .PNG (previews drawer)
 	{
 		IUtility->Strlcpy(filename, SCRSHOTS, FILENAME_LENGTH);
-		IDOS->AddPart(filename, res_s, FILENAME_LENGTH);             // add ROM filename
+		IDOS->AddPart(filename, res_s, FILENAME_LENGTH);      // add ROM filename
 		IUtility->Strlcat(filename, ".png", FILENAME_LENGTH); // add extension
 
 		if(updateButtonImage(filename, NULL, OID_PREVIEW_BTN, dgg->win) == FALSE) // .TGA (screenshoots drawer)
 		{
 			updateButtonImage(PREVIEWS"/not_available.png", GetString(&li,MSG_ERROR_GUI_NOPREVIEW), OID_PREVIEW_BTN, dgg->win); // fallback img/txt
+		}
+	}
+
+	IExec->FreeVec(filename);
+}
+
+void LaunchRom(struct DGenGUI *dgg)
+{
+	uint32 res_n;
+	STRPTR res_s = NULL, res_e = NULL, filename;
+	char rom_ext[5] = ".";
+DBUG("LaunchRom()\n",NULL);
+	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), (uint32 *)&res_n);
+	if(res_n == 0) { return; }
+
+	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE);
+
+	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
+	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_FMT, LBNCA_Text,&res_e, TAG_DONE );
+DBUG("  res_n=0x%08lx -> res_s='%s' (res_e='%s')\n",res_n,res_s,res_e);
+	IUtility->Strlcpy(filename, ROMS, FILENAME_LENGTH);
+	IUtility->Strlcat( rom_ext, res_e, sizeof(rom_ext) );
+
+	IDOS->AddPart(filename, ROMS, FILENAME_LENGTH);
+	IDOS->AddPart(filename, res_s, FILENAME_LENGTH);       // add ROM filename
+	IUtility->Strlcat(filename, rom_ext, FILENAME_LENGTH); // add extension
+DBUG("  Starting ROM '%s'...\n",filename);
+	updateButtonImage(NULL, "", OID_PREVIEW_BTN, dgg->win); // "unlock" preview image/button
+DBUG("  WM_CLOSE (win=0x%08lx)\n",dgg->win);
+	IIntuition->IDoMethod(OBJ(OID_MAIN), WM_CLOSE);
+	dgg->win = NULL;
+	// LAUNCH ROM
+	if(beginCommand(filename) != 0) {
+		DoMessage( (STRPTR)GetString(&li,MSG_ERROR_LAUNCHING), REQIMAGE_ERROR, NULL ); //"Error launching 'snes9x-sdl'!"
+	}
+
+	if( (dgg->win=(struct Window *)IIntuition->IDoMethod(OBJ(OID_MAIN), WM_OPEN, NULL)) )
+	{
+DBUG("  WM_OPEN (win=0x%08lx)\n",dgg->win);
+		dgg->screen = dgg->win->WScreen;
+		//IIntuition->SetAttrs(OBJ(OID_MAIN), WA_PubScreen,dgg->screen, TAG_DONE);
+		ShowPreview(dgg); // "reload" preview (maybe user created a snapshoot)
+		IIntuition->ScreenToFront(dgg->screen);
+//DBUG("  dgg->wbs = 0x%08lx\n",dgg->wbs);
+		if(dgg->wbs)
+		{
+			IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Selected,&dgg->myTT.last_rom_run, TAG_DONE);
+			IUtility->SNPrintf(rom_ext, sizeof(rom_ext), "%ld",dgg->myTT.last_rom_run); // using 'rom_ext' as temp buffer
+			SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "LAST_ROM_LAUNCHED", rom_ext);
 		}
 	}
 
