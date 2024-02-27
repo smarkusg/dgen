@@ -1,4 +1,4 @@
-; $VER: dgengui.cd 1.1 (dd.mm.2024)
+; $VER: dgengui.cd 1.1 (26.02.2024)
 ;
 ;
 MSG_ERROR_NOROMS (1//)
@@ -25,8 +25,9 @@ MSG_GUI_ABOUT_TEXT (//200)
 \033c\033b%s %s\033n\n\n\
 GUI for DGen, OS4 port by Marek Glogowski\n\n\
 Acknowlegdments: kas1e, samo79,\n\
-smarkusg and everyone I forget.
-;VERS DATE
+smarkusg and everyone I forget.\n\n\
+(using built-in strings)
+;VERS DATE (and change 'built-in..' with translator data)
 ;
 ;
 MSG_GUI_TITLE_COL_ROM (100//)
@@ -43,15 +44,17 @@ Select ROMs drawer
 ;
 MSG_GUI_TOTALROMS (//)
  %ld roms availables
+;space at beginning to not being too close to rom listbrowser
 ;
 MSG_GUI_SAVESTATES (//)
  Load saved slot
+;space at beginning to not being too close to rom listbrowser
 ;
 MSG_GUI_SAVESTATES_NO (//)
 No
 ;
 MSG_GUI_ABOUT_BTN (//)
-_About
+_About...
 ;
 MSG_GUI_SAVE_BTN (//)
 _Save settings
