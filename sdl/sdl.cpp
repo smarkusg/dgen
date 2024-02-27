@@ -1481,7 +1481,6 @@ static void do_screenshot(md& megad)
 		return;
 	}
 	fclose(fp);
-	remove (name);
 #else
 retry:
 	snprintf(name, sizeof(name), "%s-%06u.tga",

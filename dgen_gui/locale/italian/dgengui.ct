@@ -6,7 +6,7 @@
 ; ATO Italia
 ; Compiled with FlexCat 2.18 PPC (AmigaOS4)
 ; flexcat dgengui.cd dgengui_it.ct catalog=dgengui.catalog
-; 
+;
 ; Italian translation of dgengui
 ;
 ; Traduzione italiana di dgengui
@@ -74,7 +74,7 @@ No
 ; No
 ;
 MSG_GUI_ABOUT_BTN
-_Informazioni
+_Informazioni...
 ; _About
 ;
 MSG_GUI_SAVE_BTN
