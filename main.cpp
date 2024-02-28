@@ -201,7 +201,7 @@ void ram_load(md& megad)
        strcpy(wm_title, AMIGA_VERSION);
        strcat(wm_title, " ROMNAME: ");
        strcat(wm_title, megad.romname);
-       SDL_WM_SetCaption(wm_title ,"" );
+       SDL_WM_SetCaption(wm_title ,"Dgen" );
 #endif
 	if (!megad.has_save_ram())
 		return;
