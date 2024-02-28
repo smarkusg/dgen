@@ -3856,7 +3856,7 @@ int pd_graphics_init(int want_sound, int want_pal, int hz)
 #ifndef __AMIGAOS4__
 	SDL_WM_SetCaption("DGen/SDL " VER, "DGen/SDL " VER);
 #else
-	SDL_WM_SetCaption(AMIGA_VERSION, "");
+	SDL_WM_SetCaption(AMIGA_VERSION, "Dgen");
 #endif
 	// Hide the cursor.
 	SDL_ShowCursor(0);
