@@ -92,7 +92,11 @@ static void help()
   "Where options are:\n"
   "    -v              Print version number and exit.\n"
   "    -r RCFILE       Read in the file RCFILE after parsing\n"
+#ifdef __AMIGAOS4__
+  "                    $PROGDIR:DgenConf/dgenrc.\n"
+#else
   "                    $HOME/.dgen/dgenrc.\n"
+#endif
   "    -n USEC         Causes DGen to sleep USEC microseconds per frame, to\n"
   "                    be nice to other processes.\n"
   "    -p CODE,CODE... Takes a comma-delimited list of Game Genie (ABCD-EFGH)\n"

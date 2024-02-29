@@ -61,9 +61,6 @@ char fullpath_dgen[1024] = "";
 static int AmigaOS_argc = 0;
 static char **AmigaOS_argv = NULL;
 
-char* SDL_FULL = NULL;
-char* FULLSCREEN_START = NULL;
-
 static void Free_Arg(void)
 {
 	if (AmigaOS_argv)
