@@ -199,14 +199,7 @@ void ram_load(md& megad)
 {
 	FILE *load;
 	int ret;
-	static char wm_title [ 512 ] ;
-#ifdef __AMIGAOS4__
-       /*markus - dodaje tu - wim ze rom zaladowany i prosty dostep do nazwy fixme */
-       strcpy(wm_title, AMIGA_VERSION);
-       strcat(wm_title, " ROMNAME: ");
-       strcat(wm_title, megad.romname);
-       SDL_WM_SetCaption(wm_title ,"Dgen" );
-#endif
+
 	if (!megad.has_save_ram())
 		return;
 	load = dgen_fopen("ram", megad.romname, DGEN_READ);
@@ -556,6 +549,23 @@ next_rom:
 			megad->init_sound();
 		}
 	}
+
+#ifdef __AMIGAOS4__
+       // SDL Caption
+       static char wm_title [ 512 ] ;
+       /*markus - dodaje tu - wim ze rom zaladowany i prosty dostep do nazwy fixme */
+       strcpy(wm_title, AMIGA_VERSION);
+       strcat(wm_title, " ROMNAME: ");
+       strcat(wm_title, megad->romname);
+       if (demo_status == DEMO_RECORD) {
+           strcat(wm_title, " [->* PLAY and REC *<-]");
+       }
+       else {
+         if (demo_status == DEMO_PLAY)
+           strcat(wm_title, " [-> PLAYBACK <-]");
+       }
+       SDL_WM_SetCaption(wm_title ,"Dgen" );
+#endif
 
 	// Load up save RAM
 	ram_load(*megad);
