@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (27.02.2024)
+## version $VER: dgengui.catalog 1.1 (29.02.2024)
 ## codeset 4
 ## language italiano
 ## chunk AUTH Translated by Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
@@ -11,7 +11,7 @@
 ;
 ; Traduzione italiana di dgengui
 ;
-; $VER: dgengui.cd 1.1 (26.02.2024)
+; $VER: dgengui.cd 1.1 (29.02.2024)
 ;
 MSG_ERROR_NOROMS
 Nessuna ROM trovata
@@ -51,10 +51,10 @@ Samir Hawamdeh
 ; Acknowlegdments: kas1e, samo79,\n\
 ; smarkusg and everyone I forget.\n\n\
 ; (using built-in strings)
-; VERS DATE (and change 'built-in..' with translator data)
+; VERS DATE (and change 'built-in..' with translator data, keep as short as possible)
 ;
 MSG_GUI_TITLE_COL_ROM
-Gioco
+ROM/Gioco
 ; Game
 ;
 MSG_GUI_TITLE_COL_FMT
@@ -62,17 +62,12 @@ Formato
 ; Format
 ;
 MSG_GUI_ROMDRAWER
- _ROM:
-;  _ROMS:
+ ROM:
+;  ROMS:
 ;
 MSG_GUI_ROMDRAWER_TITLE
-Seleziona cartella ROM
+Seleziona cartella delle ROM
 ; Select ROMs drawer
-;
-MSG_GUI_TOTALROMS
- %ld rom disponibili
-;  %ld roms availables
-; space at beginning to not being too close to rom listbrowser
 ;
 MSG_GUI_SAVESTATES
  Carica slot salvataggio
@@ -80,18 +75,100 @@ MSG_GUI_SAVESTATES
 ; space at beginning to not being too close to rom listbrowser
 ;
 MSG_GUI_SAVESTATES_NO
-No
+Nessuno
 ; No
 ;
+MSG_GUI_TOTALROMS
+ %ld rom disponibili
+;  %ld roms availables
+; space at beginning to not being too close to rom listbrowser
+;
+; MSG_GUI_OPTIONS_GROUP
+; Opzioni
+; Options
+;
+MSG_GUI_GAME_RUN
+Avvia gioco selezionato
+; Play selected game
+;
+MSG_GUI_GAME_REC
+Avvia & Registra gioco selezionato
+; Play & Record selected game
+;
+MSG_GUI_GAME_PLAY_REC
+Riproduci gioco registrato
+; Playback recorded game
+;
+; MSG_GUI_RECGAME_FILE_TITLE
+; Seleziona percorso e nome del gioco registrato
+; Select record game path and name
+;
 MSG_GUI_ABOUT_BTN
-_Informazioni...
-; _About...
+Informazioni...
+; About...
 ;
 MSG_GUI_SAVE_BTN
-_Salva impostazioni
-; _Save settings
+Salva impostazioni
+; Save settings
 ;
 MSG_GUI_QUIT_BTN
-_Esci
-; _Quit
+Esci
+; Quit
+;
+MSG_GUI_ROMDRAWER_HELP
+Seleziona cartella delle ROM Genesis/MD
+; Select drawer with Genesis/MD ROMs.
+;
+MSG_GUI_DGENEXEX_HELP
+Seleziona uno tra gli eseguibili disponibili\n\
+SDL1 o SDL2 (usa SDL1.2compat)
+; Choose between SDL1 or SDL2 (uses\n\
+; SDL1.2compat) versions of executable.
+;
+MSG_GUI_LISTBROWSER_HELP
+Elenco delle ROM Genesis/MD.\n\
+Puoi far partire il gioco con un\n\
+semplice doppio click, oppure\n\
+cliccando sull'immagine
+; List of Genesis/MD ROMs.\n\
+; Double click is like clicking\n\
+; on image/button.
+;
+OID_PREVIEW_BTN_HELP
+Clicca per \"avviare\" la ROM selezionata\n\
+Dipende dalla selezione sottostante\n\
+(avvia, avvia & registra o registrazione)
+; Click to \"launch\" ROM.\n\
+; Depends on below option (play,\n\
+; play&rec. or playback).
+;
+MSG_GUI_GAME_OPTIONS_HELP
+\033bAvvia\033n: avvia il gioco normalmente\n\
+\033bAvvia & Registra\033n: registra una demo\n\
+del gioco a cui stai giocando\n\
+\033bAvvia registrazione\033n: riproduci una\n\
+demo registrata in precedenza
+; \033bPlay\033n: just like a normal game.\n\
+; \033bPlay&Record\033n: record a demo of\n\
+;  the game you are playing\n\
+; \033bPlayback\033n: play back a previously\n\
+; recorded demo.
+;
+MSG_GUI_SAVESTATES_HELP
+Elenco degli \"slot\" salvati disponibili
+; List of saved \"slots\" availables.
+;
+MSG_GUI_ABOUT_BTN_HELP
+Mostra informazioni su DGenGUI
+; Show about DGenGUI
+;
+MSG_GUI_SAVE_BTN_HELP
+Salva i tooltype:\n\
+\033bCARTELLA ROMS\033n
+; Save tooltypes:\n\
+; \033bROMS_DRAWER\033n
+;
+MSG_GUI_QUIT_BTN_HELP
+Esci da DGenGUI
+; Quit DGenGUI
 ;
