@@ -42,11 +42,16 @@
 #define PREVIEWS  "PROGDIR:PREVIEWS"
 #define SCRSHOTS  "PROGDIR:DgenConf/screenshots"
 #define SAVES     "PROGDIR:DgenConf/saves"
+//#define RECGAMES  "PROGDIR:DgenConf/demos"
+
+// gui_build.c: 'make_chooser_list2(<mode>,..)'
+#define ADD_LIST 0
+#define NEW_LIST 1
 
 
 enum {
  COL_ROM = 0,
- COL_FMT, // ZIP BIN SMC ... (extensions)
+ COL_FMT, // file extension
  LAST_COL
 };
 
@@ -58,8 +63,10 @@ enum {
  OID_LISTBROWSER,
  OID_PREVIEW_BTN,
  OID_PREVIEW_IMG, // MUST BE after OID_PREVIEW_BTN [updateButtonImage()]
- OID_TOTALROMS,
+ //OID_OPTIONS_GROUP,
+ OID_GAME_OPTIONS,
  OID_SAVESTATES,
+ OID_TOTALROMS,
  // Buttons
  OID_ABOUT,
  OID_SAVE,
@@ -81,7 +88,7 @@ enum {
 struct myToolTypes {
 	STRPTR romsdrawer;  // ROMS_DRAWER=<path>
 	int32 last_rom_run; // LAST_ROM_LAUNCHED=<value>
-
+	BOOL show_hints;    // SHOW_HINTS
 	//STRPTR newttp, ttpBuf1, ttpBuf2; // only needed if using SaveToolType()
 };
 
@@ -93,7 +100,7 @@ struct DGenGUI {
 	struct myToolTypes myTT;
 	//STRPTR dgen_path;
 	struct WBStartup *wbs;
-	struct List *savestates_list;
+	struct List *savestates_list, *game_opts_list;
 };
 
 

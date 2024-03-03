@@ -18,6 +18,7 @@ extern struct Screen *FrontMostScr(void);
 extern STRPTR DupStr(CONST_STRPTR str, int32 length);
 extern VOID FreeString(STRPTR *string);
 extern void free_chooserlist_nodes(struct List *);
+//extern void createDrawer(STRPTR fullpath);
 
 
 const char *version = VERSTAG;
@@ -47,12 +48,13 @@ int gui_main(struct WBStartup *wbs)
 DBUG("*** START DGENGUI ***\n",NULL);
 
 	if(OpenLibs() == TRUE) {
-		struct DGenGUI *DGenG = IExec->AllocVecTags(sizeof(struct DGenGUI), AVT_ClearWithValue,NULL, TAG_DONE);
+		struct DGenGUI *DGenG = IExec->AllocVecTags(sizeof(struct DGenGUI), AVT_ClearWithValue,NULL, TAG_END);
 
 		DGenG->myTT.romsdrawer = DupStr( ROMS, sizeof(ROMS) );
-		//DGenG->myTT.newttp = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE);
-		//DGenG->myTT.ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE);
-		//DGenG->myTT.ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE);
+		//DGenG->myTT.newttp = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
+		//DGenG->myTT.ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
+		//DGenG->myTT.ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
+		DGenG->myTT.show_hints = FALSE;
 
 DBUG("wbs = 0x%08lx\n",wbs);
 		if(wbs) // launched from WB/icon
@@ -92,6 +94,9 @@ DBUG("ROMS_DRAWER set to '%s'\n",DGenG->myTT.romsdrawer);
 DBUG("LAST_ROM_LAUNCHED tooltype set to %ld\n",DGenG->myTT.last_rom_run);
 				}
 
+				ttp = IIcon->FindToolType(micon->do_ToolTypes, "SHOW_HINTS");
+				if(ttp) { DGenG->myTT.show_hints = TRUE; }
+
 				IIcon->FreeDiskObject(micon);
 			}
 		}
@@ -99,14 +104,24 @@ DBUG("LAST_ROM_LAUNCHED tooltype set to %ld\n",DGenG->myTT.last_rom_run);
 		if(DGenG->screen == NULL) { DGenG->screen = IIntuition->LockPubScreen(NULL); }
 DBUG("pubscreen=0x%lx '%s'\n",DGenG->screen,DGenG->screen->Title);
 
+		// Create "needed" drawers in 'PROGDIR:DGenConf' in case don't exists
+		/*createDrawer(SCRSHOTS);
+		createDrawer(SAVES);
+		createDrawer(RECGAMES);*/
+
 		DGenG->romlist = IExec->AllocSysObject(ASOT_LIST, NULL);
 		DGenG->savestates_list = IExec->AllocSysObject(ASOT_LIST, NULL);
+		DGenG->game_opts_list = IExec->AllocSysObject(ASOT_LIST, NULL);
 
 		CreateGUIwindow(DGenG);
 
 		free_chooserlist_nodes(DGenG->savestates_list);
 		IExec->FreeSysObject(ASOT_LIST, DGenG->savestates_list);
 		DGenG->savestates_list = NULL;
+
+		free_chooserlist_nodes(DGenG->game_opts_list);
+		IExec->FreeSysObject(ASOT_LIST, DGenG->game_opts_list);
+		DGenG->game_opts_list = NULL;
 
 		IListBrowser->FreeListBrowserList(DGenG->romlist);
 		IExec->FreeSysObject(ASOT_LIST, DGenG->romlist);

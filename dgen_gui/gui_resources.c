@@ -12,7 +12,7 @@ struct LocaleInfo li;
 #define MAX_FULLFILEPATH  MAX_DOS_PATH+MAX_DOS_FILENAME // GetRoms()
 
 
-extern int32 beginCommand(char *romfile);
+extern int32 beginCommand(STRPTR rom_file, STRPTR rom_ext);
 
 
 struct Library *IconBase = NULL;
@@ -224,8 +224,8 @@ int32 GetRoms(STRPTR romsdir, struct List *list)
 	int32 resul = 0;
 	char rom[MAX_DOS_FILENAME], ext[4] = ""; // extension + '\0'
 	struct Node *n;
-	STRPTR pattern_ms = IExec->AllocVecTags(256, TAG_DONE),
-	       romfullpath = IExec->AllocVecTags(MAX_FULLFILEPATH, AVT_ClearWithValue,0, TAG_DONE);
+	STRPTR pattern_ms = IExec->AllocVecTags(256, TAG_END),
+	       romfullpath = IExec->AllocVecTags(MAX_FULLFILEPATH, AVT_ClearWithValue,0, TAG_END);
 DBUG("GetRoms() '%s'\n",romsdir);
 	IDOS->ParsePatternNoCase("#?.(zip|smd|bin|md)", pattern_ms, 64);
 	IUtility->Strlcpy(romfullpath, ROMS, MAX_FULLFILEPATH);
@@ -336,9 +336,9 @@ int32 SaveToolType(STRPTR iconname, STRPTR ttpName, STRPTR ttpArg)
 {
 	int32 i = 0;
 	//char newttp[1024], ttpBuf1[256], ttpBuf2[256];
-	STRPTR newttp = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE),
-	       ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE),
-	       ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_DONE);
+	STRPTR newttp = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,0, TAG_END),
+	       ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,0, TAG_END),
+	       ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,0, TAG_END);
 	struct DiskObject *micon = NULL;
 DBUG("SaveToolType() - START\n",NULL);
 	if(ttpArg)
@@ -351,58 +351,59 @@ DBUG("SaveToolType() - START\n",NULL);
 		IUtility->Strlcpy(newttp, ttpName, MAX_DOS_PATH); // "<tooltype>"
 		IUtility->SNPrintf(ttpBuf2, MAX_DOS_PATH, "(%s)",ttpName); // BUF2 = "(<tooltype>)"
 	}
-
 	IUtility->Strlcpy(ttpBuf1, newttp, MAX_DOS_PATH); // BUF1 = NEWTTP
 
 	micon = IIcon->GetDiskObject(iconname);
 	if(micon)
 	{
 		STRPTR *oldttp = NULL;
-
-		for(; micon->do_ToolTypes[i]!=NULL; i++) // parse tooltypes
+DBUG("  micon = 0x%08lx (do_ToolTypes=0x%08lx)\n",micon,micon->do_ToolTypes);
+		if(micon->do_ToolTypes) // icon with tooltypes..
 		{
+			for(; micon->do_ToolTypes[i]!=NULL; i++) //..parse tooltypes
+			{
 DBUG("  %2ld'%s'\n",i,micon->do_ToolTypes[i]);
-			if( !IUtility->Strnicmp(micon->do_ToolTypes[i],ttpBuf1,IUtility->Strlen(ttpBuf1))
-			   || !IUtility->Strnicmp(micon->do_ToolTypes[i],ttpBuf2,IUtility->Strlen(ttpBuf2)) )
-			{// Found tooltype
-				IUtility->Strlcat(newttp, ttpArg, MAX_DOS_PATH);
+				if( !IUtility->Strnicmp(micon->do_ToolTypes[i],ttpBuf1,IUtility->Strlen(ttpBuf1))
+				   || !IUtility->Strnicmp(micon->do_ToolTypes[i],ttpBuf2,IUtility->Strlen(ttpBuf2)) )
+				{// Found tooltype
+					IUtility->Strlcat(newttp, ttpArg, MAX_DOS_PATH);
 //DBUG("  '%s' == '%s'?\n",micon->do_ToolTypes[i],newttp);
 				// Normal case tooltype -> tooltype=value OR (tooltype=value)
-				if( ttpArg  &&  IUtility->Stricmp(micon->do_ToolTypes[i],newttp) )
-				{// Tooltype loaded diffs. from icon's tooltype -> modify tooltype
-					oldttp = micon->do_ToolTypes;
-					micon->do_ToolTypes[i] = newttp;
-					IIcon->PutDiskObject(iconname, micon);
-					micon->do_ToolTypes = oldttp;
+					if( ttpArg  &&  IUtility->Stricmp(micon->do_ToolTypes[i],newttp) )
+					{// Tooltype loaded diffs. from icon's tooltype -> modify tooltype
+						oldttp = micon->do_ToolTypes;
+						micon->do_ToolTypes[i] = newttp;
+						IIcon->PutDiskObject(iconname, micon);
+						micon->do_ToolTypes = oldttp;
 DBUG("  Tooltype modified: '%s'\n",newttp);
-				}
+					}
 /*
-				// Special case tooltype (toggle/switch) -> 'tooltype' OR '(tooltype)'
-				// NOTE: if it doesn't exists it will be created as "enabled" -> 'tooltype'
-				if(!ttpArg)
-				{
-					oldttp = micon->do_ToolTypes;
-					if(IUtility->Stricmp(micon->do_ToolTypes[i],ttpBuf1) == 0) {
-						IUtility->SNPrintf(ttpBuf1, MAX_DOS_PATH, "(%s)",ttpName); // BUF1 = "(<tooltype>)"
-					}
-					else {
-						IUtility->Strlcpy(ttpBuf1, newttp, MAX_DOS_PATH); // BUF1 = "<tooltype>"
-					}
+					// Special case tooltype (toggle/switch) -> 'tooltype' OR '(tooltype)'
+					// NOTE: if it doesn't exists it will be created as "enabled" -> 'tooltype'
+					if(!ttpArg)
+					{
+						oldttp = micon->do_ToolTypes;
+						if(IUtility->Stricmp(micon->do_ToolTypes[i],ttpBuf1) == 0) {
+							IUtility->SNPrintf(ttpBuf1, MAX_DOS_PATH, "(%s)",ttpName); // BUF1 = "(<tooltype>)"
+						}
+						else {
+							IUtility->Strlcpy(ttpBuf1, newttp, MAX_DOS_PATH); // BUF1 = "<tooltype>"
+						}
 
-					micon->do_ToolTypes[i] = ttpBuf1;
-					IIcon->PutDiskObject(iconname, micon);
-					micon->do_ToolTypes = oldttp;
+						micon->do_ToolTypes[i] = ttpBuf1;
+						IIcon->PutDiskObject(iconname, micon);
+						micon->do_ToolTypes = oldttp;
 DBUG("  Tooltype toggled: '%s'\n",ttpBuf1);
-				}
+					}
 */
-				break;
+					break;
+				} // END if( !Strnicmp(micon->..
+			} // END for
+		} // END if(micon->do_ToolTypes)
 
-			} // END if( !Strnicmp(micon->..
-		} // END for
-
-		if(!micon->do_ToolTypes[i])
-		{// No tooltype -> create tooltype entry and END
-			STRPTR *newtts = IExec->AllocVecTags( (i+2)*sizeof(STRPTR), TAG_DONE );
+		if(!micon->do_ToolTypes  ||  !micon->do_ToolTypes[i]) // No tooltypes or doesn't exists..
+		{//..create tooltype entry and END
+			STRPTR *newtts = IExec->AllocVecTags( (i+2)*sizeof(STRPTR), TAG_END );
 //DBUG("  Tooltype '%s' NOT found (i=%ld)\n",newttp,i);
 			IUtility->Strlcat(newttp, ttpArg, MAX_DOS_PATH);
 			oldttp = micon->do_ToolTypes;
@@ -426,6 +427,23 @@ DBUG("SaveToolType() - END\n",NULL);
 
 	return i;
 }
+
+/*void createDrawer(STRPTR fullpath)
+{
+	BPTR lock;
+	struct ExamineData *data;
+DBUG("createDrawer() '%s'\n",fullpath);
+	if( (data=IDOS->ExamineObjectTags(EX_StringNameInput,fullpath, TAG_END)) )
+	{
+		//if( EXD_IS_FILE(data) ) {}
+		//if( EXD_IS_DIRECTORY(data) ) {}
+		IDOS->FreeDosObject(DOS_EXAMINEDATA, data);
+		return;
+	}
+DBUG("  creating '%s'\n",fullpath);
+	lock = IDOS->CreateDir(fullpath);
+	IDOS->UnLock(lock);
+}*/
 
 /*void free_chooserlist_nodes(struct List *list)
 {
@@ -453,8 +471,8 @@ void GetSavestates(struct DGenGUI *dgg, STRPTR fn)
 {
 	APTR context;
 	struct Node *node;
-	STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_DONE),
-	       pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_DONE);
+	STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_END),
+	       pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_END);
 DBUG("GetSavestates()\n",NULL);
 	IUtility->Strlcpy(filestate, fn, MAX_DOS_FILENAME);
 	IUtility->Strlcat(filestate, ".gs[0-9]", MAX_DOS_FILENAME);
@@ -493,7 +511,7 @@ DBUG("    slot #%s\n",slot); // only need the slot number (aka last char)
 	}
 
 	// Re-attach chooser list
-	IIntuition->SetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Labels,dgg->savestates_list, TAG_DONE);
+	IIntuition->SetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Labels,dgg->savestates_list, GA_Disabled,FALSE, TAG_DONE);
 	IIntuition->RefreshGadgets(GAD(OID_SAVESTATES), dgg->win, NULL);
 
 	IDOS->ReleaseDirContext(context);
@@ -509,7 +527,7 @@ void ShowPreview(struct DGenGUI *dgg)
 	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), (uint32 *)&res_n);
 	if(res_n == 0) { return; }
 
-	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE);
+	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_END);
 
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
 DBUG("res_n=0x%08lx -> res_s='%s'\n",res_n,res_s);
@@ -532,6 +550,11 @@ DBUG("PREVIEW: '%s'\n",filename);
 		}
 	}
 
+	// Reset default options group
+	//IIntuition->SetAttrs(OBJ(OID_GAME_OPTIONS),CHOOSER_Selected,0, TAG_DONE);
+	//IIntuition->RefreshGadgets(GAD(OID_OPTIONS_GROUP), dgg->win, NULL);
+	IIntuition->RefreshSetGadgetAttrs(GAD(OID_GAME_OPTIONS), dgg->win, NULL, CHOOSER_Selected,0, TAG_DONE);
+
 	IExec->FreeVec(filename);
 }
 
@@ -541,10 +564,10 @@ void LaunchRom(struct DGenGUI *dgg)
 	STRPTR res_s = NULL, res_e = NULL, filename;
 	char rom_ext[5] = ".";
 DBUG("LaunchRom()\n",NULL);
-	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), (uint32 *)&res_n);
+	IIntuition->GetAttr(LISTBROWSER_SelectedNode, OBJ(OID_LISTBROWSER), &res_n);
 	if(res_n == 0) { return; }
 
-	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_DONE);
+	filename = IExec->AllocVecTags(FILENAME_LENGTH, TAG_END);
 
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_FMT, LBNCA_Text,&res_e, TAG_DONE );
@@ -554,14 +577,14 @@ DBUG("  res_n=0x%08lx -> res_s='%s' (res_e='%s')\n",res_n,res_s,res_e);
 
 	IDOS->AddPart(filename, ROMS, FILENAME_LENGTH);
 	IDOS->AddPart(filename, res_s, FILENAME_LENGTH);       // add ROM filename
-	IUtility->Strlcat(filename, rom_ext, FILENAME_LENGTH); // add extension
-DBUG("  Starting ROM '%s'...\n",filename);
+	//IUtility->Strlcat(filename, rom_ext, FILENAME_LENGTH); // add extension
+DBUG("  Starting ROM '%s%s'...\n",filename,rom_ext);
 	updateButtonImage(NULL, "", OID_PREVIEW_BTN, dgg->win); // "unlock" preview image/button
 DBUG("  WM_CLOSE (win=0x%08lx)\n",dgg->win);
 	IIntuition->IDoMethod(OBJ(OID_MAIN), WM_CLOSE);
 	dgg->win = NULL;
 	// LAUNCH ROM
-	if(beginCommand(filename) != 0) {
+	if(beginCommand(filename,rom_ext) != 0) {
 		DoMessage( (STRPTR)GetString(&li,MSG_ERROR_LAUNCHING), REQIMAGE_ERROR, NULL ); //"Error launching 'snes9x-sdl'!"
 	}
 
@@ -599,7 +622,7 @@ STRPTR DupStr(CONST_STRPTR str, int32 length)
 		length = str_len;
 	}
 
-	if( (dup=IExec->AllocVecTags(length+1, AVT_ClearWithValue,0, TAG_DONE)) )
+	if( (dup=IExec->AllocVecTags(length+1, AVT_ClearWithValue,0, TAG_END)) )
 	{
 		uint32 copy_len = str_len;
 

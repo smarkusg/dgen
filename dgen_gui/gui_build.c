@@ -9,7 +9,7 @@ extern struct LocaleInfo li;
 
 void CreateGUIwindow(struct DGenGUI *);
 BOOL ProcessGUI(struct DGenGUI *);
-int32 beginCommand(char *romfile);
+int32 beginCommand(STRPTR rom_file, STRPTR rom_ext);
 void updateList(struct DGenGUI *);
 
 extern uint32 DoMessage(char *message, char reqtype, STRPTR buttons);
@@ -19,6 +19,7 @@ extern void ShowPreview(struct DGenGUI *);
 extern STRPTR DupStr(CONST_STRPTR str, int32 length);
 extern VOID FreeString(STRPTR *string);
 extern int32 SaveToolType(STRPTR iconname, STRPTR ttpName, STRPTR ttpArg);
+extern BOOL make_chooser_list2(BOOL, struct List *, int32, int32); // using CATCOMP_NUMBERS and index
 
 
 extern struct IconIFace *IIcon;
@@ -45,33 +46,44 @@ uint32 res_prev; // avoid "reload" already selected ROM
 
 
 #define CMDLINE_LENGTH 2048
-int32 beginCommand(char *romfile)
+int32 beginCommand(STRPTR rom_file, STRPTR rom_ext)
 {
-	STRPTR cmdline;
+	STRPTR cmdline = IExec->AllocVecTags(CMDLINE_LENGTH, TAG_END),
+	       savestate_str;
+	uint32 res_val;
 	int32 res_value = 0;
-	STRPTR savestate = NULL;
 	struct Node *res_nod;
 DBUG("beginCommand()\n",NULL);
 	// Check if romfile exists
-	struct ExamineData *dat = IDOS->ExamineObjectTags(EX_StringNameInput,romfile, TAG_END);
-	if(dat == NULL) { return -1; }
+	IUtility->Strlcpy(cmdline, rom_file, CMDLINE_LENGTH);
+	IUtility->Strlcat(cmdline, rom_ext, CMDLINE_LENGTH);
+	struct ExamineData *dat = IDOS->ExamineObjectTags(EX_StringNameInput,cmdline, TAG_END);
+	if(dat == NULL) {
+		IExec->FreeVec(cmdline);
+		return -1;
+	}
 DBUG("  ExamineObjectTags(): '%s' %s%lld bytes\n",dat->Name,"",dat->FileSize);
 	IDOS->FreeDosObject(DOS_EXAMINEDATA, dat);
 
-	cmdline = IExec->AllocVecTags(CMDLINE_LENGTH, TAG_DONE);
+	// Add executble to commandline string
+	IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_DGENEXE), &res_val);
+	IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "DGEN-SDL%ld",res_val+1);
 
-	// Add romfile (and savestate) to commandline string
-	IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_DGENEXE), (uint32*)&res_value);
-
-	IIntuition->GetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Selected,(uint32*)&savestate, CHOOSER_SelectedNode,(uint32*)&res_nod, TAG_DONE);
-	if(savestate != NULL) {
-		IChooser->GetChooserNodeAttrs(res_nod, CNA_Text,&savestate, TAG_DONE);
-DBUG("  load savestate %lc\n",savestate[0]);
-		IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "DGEN-SDL%ld -s %lc \"%s\"",res_value+1,savestate[0],romfile);
+	// Add 0:RUN/PLAY or 1:RECORD or 2:PLAYBACK to commandline string
+	IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_GAME_OPTIONS), &res_val);
+	if(res_val != 0) {
+		IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "%s -%lc \"%s.REC\"",cmdline,res_val==1? 'd':'D',IDOS->FilePart(rom_file) );
 	}
-	else { IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "DGEN-SDL%ld \"%s\"",res_value+1,romfile); }
-
-	//IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "DGEN-SDL%ld \"%s\"",res_value+1,romfile);
+	else { // add savestate (if chosen) to commandline string
+		IIntuition->GetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Selected,(uint32*)&savestate_str, CHOOSER_SelectedNode,(uint32*)&res_nod, TAG_DONE);
+		if(savestate_str != NULL) {
+			IChooser->GetChooserNodeAttrs(res_nod, CNA_Text,&savestate_str, TAG_DONE);
+DBUG("  load savestate %lc\n",savestate_str[0]);
+			IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "%s -s %lc",cmdline,savestate_str[0]);
+		}
+	}
+	// Add ROM file to commandline string
+	IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "%s \"%s%s\"",cmdline,rom_file,rom_ext);
 DBUG("  %s\n",cmdline);
 
 	// Launch 'DGen'
@@ -83,11 +95,33 @@ DBUG("  %s\n",cmdline);
 	return res_value;
 }
 
+uint32 selectListEntry(struct Window *pw, uint32 res_val)
+{
+	IIntuition->SetAttrs(OBJ(OID_LISTBROWSER),
+	                     LISTBROWSER_Selected,res_val,
+	                     LISTBROWSER_MakeVisible,res_val, TAG_DONE);
+	IIntuition->RefreshGadgets(GAD(OID_LISTBROWSER), pw, NULL);
+
+	return res_val;
+}
+
+uint32 selectListEntryNode(struct Window *pw, struct Node *n)
+{
+	uint32 res_val;
+	IIntuition->SetAttrs(OBJ(OID_LISTBROWSER),
+                      LISTBROWSER_SelectedNode,n,
+                      LISTBROWSER_MakeNodeVisible,n, TAG_DONE);
+	IIntuition->RefreshGadgets(GAD(OID_LISTBROWSER), pw, NULL);
+	IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Selected,&res_val, TAG_DONE);
+
+	return res_val;
+}
+
 BOOL ProcessGUI(struct DGenGUI *dgg)
 {
 	BOOL done = TRUE;
 	uint16 code = 0;
-	uint32 result = WMHI_LASTMSG, res_value = 0, res_temp = 0,
+	uint32 result = WMHI_LASTMSG, res_value = 0, res_totnode = 0, res_temp = 0,
 	       siggot = 0, wsigmask = 0;
 	STRPTR res_str = NULL;
 
@@ -122,6 +156,115 @@ DBUG("WMHI_UNICONIFY (win=0x%08lx)\n",dgg->win);
 				IIntuition->GetAttrs(OBJ(OID_MAIN), WA_PubScreen,&dgg->screen, TAG_DONE);
 				//IIntuition->SetAttrs(OBJ(OID_MAIN), WA_PubScreen,dgg->screen, TAG_DONE);
 		break;*/
+		case WMHI_VANILLAKEY:
+		{
+DBUG("[WMHI_VANILLAKEY] = 0x%lx (0x%lx)\n",code,result&WMHI_KEYMASK);
+			struct Node *node1 = NULL, *next_node1 = NULL;
+			STRPTR node_val, next_n_val;
+			char char_node, char_keyb;
+
+			if(code == 0x1b) // ESC
+			{
+				done = FALSE;
+				break;
+			}
+
+			if(code == 0x0d) // ENTER/RETURN
+			{
+				LaunchRom(dgg);
+				break;
+			}
+
+			char_keyb = IUtility->ToUpper(result & WMHI_KEYMASK); // uppercase'd (key pressed)
+DBUG("[WMHI_VANILLAKEY] '%lc' (0x%lx)\n",char_keyb,char_keyb);
+			IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_SelectedNode,&node1, TAG_DONE);
+			IListBrowser->GetListBrowserNodeAttrs(node1, LBNA_Column,COL_ROM, LBNCA_Text,&node_val, TAG_DONE);
+			next_node1 = IExec->GetSucc(node1);
+			IListBrowser->GetListBrowserNodeAttrs(next_node1, LBNA_Column,COL_ROM, LBNCA_Text,&next_n_val, TAG_DONE);
+DBUG("  Actual Node -> Next Node\n",NULL);
+DBUG("   0x%08lx -> 0x%08lx\n",node1,next_node1);
+DBUG("          '%lC' -> '%lC'\n",*node_val,*next_n_val);
+			// SELECT IT: NEXT node starts with KEY pressed and NEXT node = ACTUAL node
+			if( char_keyb==IUtility->ToUpper(*next_n_val)  &&  IUtility->ToUpper(*next_n_val)==IUtility->ToUpper(*node_val) )
+			{
+				res_prev = selectListEntryNode(dgg->win, next_node1);
+				ShowPreview(dgg);
+			}
+			// GO TO KEY PRESSED FIRST NODE: 1)ACTUAL node starts with KEY pressed and NEXT node != ACTUAL node
+			// OR 2)pressed another KEY OR 3)reached end of listbrowser (next_node1=NULL)
+			if( (char_keyb==IUtility->ToUpper(*node_val)  &&  IUtility->ToUpper(*next_n_val)!=IUtility->ToUpper(*node_val))
+			   ||  char_keyb!=IUtility->ToUpper(*node_val)  ||  next_node1==NULL )
+			{
+				next_node1 = node1; // avoid refreshing/reloading single ROM filename entries
+				for(node1=IExec->GetHead(dgg->romlist); node1!=NULL; node1=IExec->GetSucc(node1) ) {
+					IListBrowser->GetListBrowserNodeAttrs(node1, LBNA_Column,COL_ROM, LBNCA_Text,&res_str, TAG_DONE);
+					char_node = IUtility->ToUpper(*res_str); // uppercased (romfile 1st letter)
+					if(char_node==char_keyb  &&  node1!=next_node1) {
+						res_prev = selectListEntryNode(dgg->win, node1);
+						ShowPreview(dgg);
+						node1 = NULL;
+					}
+				}
+			}
+
+		}
+		break;
+		case WMHI_RAWKEY:
+		{
+			int32 sel_entry = -1; // -1: key pressed not valid
+DBUG("[WMHI_RAWKEY] 0x%lx (win=0x%08lx)\n",code,dgg->win);
+			/*if(code == RAWKEY_ESC)
+			{
+				done = FALSE;
+				break;
+			}*/
+
+			IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Selected,&res_value,
+			                     LISTBROWSER_TotalNodes,&res_totnode, TAG_DONE);
+DBUG("  sel=%ld  nodes=%ld\n",res_value,res_totnode);
+			// HOME key
+			if(code==RAWKEY_HOME  &&  res_value!=0) {
+				sel_entry = 0;
+			}
+			// END key
+			if(code==RAWKEY_END  &&  res_value!=res_totnode-1) {
+				sel_entry = res_totnode - 1;
+			}
+			// CuRSOR UP key
+			if(code==CURSORUP  &&  res_value!=0) {
+						sel_entry = res_value - 1;
+			}
+			// PAGE UP key
+			if(code==RAWKEY_PAGEUP  &&  res_value!=0) {
+				IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Top,&res_value, LISTBROWSER_Bottom,&res_temp, TAG_DONE);
+				sel_entry = res_temp - res_value;
+				sel_entry = res_value - sel_entry;
+//DBUG("  %ld\n",sel_entry);
+				if(sel_entry < 0) { sel_entry = 0; }
+			}
+			// CURSOR DOWN key
+			if(code==CURSORDOWN  &&  res_value!=res_totnode-1) {
+				sel_entry = res_value + 1;
+			}
+			// PAGE DOWN key
+			if(code==RAWKEY_PAGEDOWN  &&  res_value!=res_totnode-1) {
+				IIntuition->GetAttrs(OBJ(OID_LISTBROWSER), LISTBROWSER_Bottom,&res_value, TAG_DONE);
+				sel_entry = res_value;
+			}
+
+			if(sel_entry != -1) {
+				res_prev = selectListEntry(dgg->win, sel_entry);
+				ShowPreview(dgg);
+			}
+
+			// RETURN/ENTER key
+			/*if(code==RAWKEY_RETURN  ||  code==RAWKEY_ENTER)
+			{
+				LaunchRom(dgg);
+			}*/
+
+		}
+		break;
 		case WMHI_GADGETUP:
 DBUG("[WMHI_GADGETUP] code = %ld (0x%08lx)\n",code,code);
 			switch(result & WMHI_GADGETMASK)
@@ -161,8 +304,15 @@ DBUG("  Selected: [old]%ld == [new]%ld\n",res_prev,res_temp);
 					DoMessage(text_buf, REQIMAGE_INFO, NULL);
 				}
 				break;
+				case OID_GAME_OPTIONS:
+					IIntuition->RefreshSetGadgetAttrs(GAD(OID_SAVESTATES), dgg->win, NULL, GA_Disabled,code==0? FALSE:TRUE, TAG_DONE);
+				break;
+				/*case OID_PLAY_RECGAME:
+					//IIntuition->RefreshSetGadgetAttrs(GAD(OID_RECGAME_FILE), dgg->win, NULL, GA_Disabled,code==1? FALSE:TRUE, TAG_DONE);
+				break;*/
 				case OID_SAVE:
 					IIntuition->GetAttr(GETFILE_Drawer, OBJ(OID_ROMDRAWER), (uint32*)&res_str);
+DBUG("  OID_SAVE: '%s' (0x%08lx)\n",res_str,dgg->wbs);
 					SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "ROMS_DRAWER", res_str);
 				break;
 				case OID_QUIT:
@@ -175,6 +325,23 @@ DBUG("  Selected: [old]%ld == [new]%ld\n",res_prev,res_temp);
 	return done;
 }
 
+BOOL make_chooser_list2(BOOL mode, struct List *list, int32 str_num, int32 index)
+{
+	struct Node *node;
+	int32 j;
+
+	if(mode == NEW_LIST) { IExec->NewList(list); }
+	for(j=0; j<index; j++)
+	{
+		node = IChooser->AllocChooserNode(CNA_CopyText, TRUE,
+		                                  CNA_Text, GetString(&li, str_num+j),
+		                                 TAG_DONE);
+		if(node) { IExec->AddTail(list, node); }
+		else { return FALSE; }
+	}
+
+	return TRUE;
+}
 
 void CreateGUIwindow(struct DGenGUI *dgg)
 {
@@ -200,8 +367,7 @@ DBUG("CreateGUIwindow()\n",NULL);
 	                                                  LBCIA_Width, max_w_ext,
 	                           TAG_DONE);
 
-	//node = IChooser->AllocChooserNode(CNA_Text,GetString(&li,MSG_GUI_SAVESTATES_NO), TAG_DONE);
-	//IExec->AddTail(dgg->savestates_list, node);
+	make_chooser_list2(NEW_LIST, dgg->game_opts_list, MSG_GUI_GAME_RUN, 3);
 
 	OBJ(OID_MAIN) = IIntuition->NewObject(WindowClass, NULL, //"window.class",
         WA_ScreenTitle, VERS" "DATE,
@@ -213,12 +379,14 @@ DBUG("CreateGUIwindow()\n",NULL);
         WA_SizeGadget,  TRUE,
         WA_DepthGadget, TRUE,
         WA_Activate,    TRUE,
+        WA_IDCMP, IDCMP_VANILLAKEY | IDCMP_RAWKEY,
         WINDOW_IconifyGadget, TRUE,
         WINDOW_AppPort,       gAppPort,
         WINDOW_Icon,          dgg->iconify,
         WINDOW_Position,    WPOS_CENTERSCREEN,
         WINDOW_PopupGadget, TRUE,
         //WINDOW_JumpScreensMenu, TRUE,
+        WINDOW_GadgetHelp, dgg->myTT.show_hints,
         WINDOW_Layout, IIntuition->NewObject(LayoutClass, NULL, //"layout.gadget",
          LAYOUT_Orientation,    LAYOUT_ORIENT_VERT,
          LAYOUT_SpaceOuter,     TRUE,
@@ -232,7 +400,7 @@ DBUG("CreateGUIwindow()\n",NULL);
              //IA_Scalable, TRUE,
              BITMAP_Screen,     dgg->screen,
              //BITMAP_Transparent, TRUE,
-             BITMAP_SourceFile, "PROGDIR:DgenConf/dgen_banner.png",
+             BITMAP_SourceFile, "PROGDIR:DGenConf/dgen_banner.png",
            TAG_DONE),
          TAG_DONE),
          CHILD_WeightedHeight, 0,
@@ -244,6 +412,7 @@ DBUG("CreateGUIwindow()\n",NULL);
           LAYOUT_AddChild, OBJ(OID_ROMDRAWER) = IIntuition->NewObject(GetFileClass, NULL,
             GA_ID,        OID_ROMDRAWER,
             GA_RelVerify, TRUE,
+            GA_HintInfo,  GetString(&li, MSG_GUI_ROMDRAWER_HELP),
             GETFILE_ReadOnly,    TRUE,
             GETFILE_RejectIcons, TRUE,
             GETFILE_TitleText,   GetString(&li, MSG_GUI_ROMDRAWER_TITLE),
@@ -255,6 +424,7 @@ DBUG("CreateGUIwindow()\n",NULL);
           TAG_DONE),
           LAYOUT_AddChild, OBJ(OID_DGENEXE) = IIntuition->NewObject(ChooserClass, NULL,
             GA_Underscore, 0,
+            GA_HintInfo,  GetString(&li, MSG_GUI_DGENEXEX_HELP),
             CHOOSER_LabelArray, chooser_array,
           TAG_DONE),
           CHILD_WeightedWidth, 0,
@@ -274,6 +444,7 @@ DBUG("CreateGUIwindow()\n",NULL);
            LAYOUT_AddChild, OBJ(OID_LISTBROWSER) = IIntuition->NewObject(ListBrowserClass, NULL, //"listbrowser.gadget",
              GA_ID,        OID_LISTBROWSER,
              GA_RelVerify, TRUE,
+             GA_HintInfo,  GetString(&li, MSG_GUI_LISTBROWSER_HELP),
              //LISTBROWSER_SortColumn,     COL_ROM,
              //LISTBROWSER_AutoFit,        TRUE,
              LISTBROWSER_Labels,         NULL,
@@ -290,7 +461,7 @@ DBUG("CreateGUIwindow()\n",NULL);
            //CHILD_MaxWidth, 800, // pixels width of listbrowser
            CHILD_WeightedWidth, 60,
 
-// BUTTON/IMAGE + [SAVESTATES + TOTALROMS]
+// BUTTON/IMAGE + [RECGAME + SAVESTATES] + TOTALROMS
              LAYOUT_AddChild, IIntuition->NewObject(LayoutClass, NULL, //"layout.gadget",
                LAYOUT_Orientation, LAYOUT_ORIENT_VERT,
                LAYOUT_SpaceOuter,  FALSE,
@@ -299,7 +470,7 @@ DBUG("CreateGUIwindow()\n",NULL);
                LAYOUT_AddChild, IIntuition->NewObject(LayoutClass, NULL, //"layout.gadget",
                  //LAYOUT_Orientation,    LAYOUT_ORIENT_VERT,
                  LAYOUT_HorizAlignment, LALIGN_CENTER,
-                 LAYOUT_SpaceOuter,  FALSE,
+                 LAYOUT_SpaceOuter,     FALSE,
                  LAYOUT_AddChild, IIntuition->NewObject(SpaceClass, NULL, //"space.gadget",
                    SPACE_MinWidth, 20,
                  TAG_DONE),
@@ -309,6 +480,7 @@ DBUG("CreateGUIwindow()\n",NULL);
                    GA_RelVerify,  TRUE,
                    GA_Underscore, 0,
                    //GA_Text,       "RUN GAME",
+                   GA_HintInfo,  GetString(&li, OID_PREVIEW_BTN_HELP),
                    BUTTON_BevelStyle,  BVS_THIN,
                    //BUTTON_Transparent, TRUE,
                    //BUTTON_BackgroundPen, BLOCKPEN,
@@ -329,24 +501,48 @@ DBUG("CreateGUIwindow()\n",NULL);
                  TAG_DONE),
                  //CHILD_WeightedWidth, 0,
                TAG_DONE), // END of BUTTON/IMAGE
-// SAVESTATES + TOTALROMS
-               LAYOUT_AddChild, OBJ(OID_SAVESTATES) = IIntuition->NewObject(ChooserClass, NULL, //"chooser.gadget",
-                 GA_ID,         OID_SAVESTATES,
-                 GA_RelVerify,  TRUE,
-                 GA_Underscore, 0,
-                 CHOOSER_Labels,   dgg->savestates_list,
-                 CHOOSER_Selected, 0,
+// [RECGAME + SAVESTATES]
+//               LAYOUT_AddChild, OBJ(OID_OPTIONS_GROUP) = IIntuition->NewObject(LayoutClass, NULL, //"layout.gadget",
+//                 LAYOUT_Orientation, LAYOUT_ORIENT_VERT,
+                 //LAYOUT_SpaceOuter,  FALSE,
+                 //LAYOUT_SpaceInner,  TRUE,
+                 //LAYOUT_BevelStyle,  BVS_GROUP,
+                 //LAYOUT_Label,       GetString(&li, MSG_GUI_OPTIONS_GROUP),//"Options",
+                 LAYOUT_AddChild, OBJ(OID_GAME_OPTIONS) = IIntuition->NewObject(ChooserClass, NULL, //"chooser.gadget",
+                   GA_ID,         OID_GAME_OPTIONS,
+                   GA_RelVerify,  TRUE,
+                   GA_Underscore, 0,
+                   GA_HintInfo,  GetString(&li, MSG_GUI_GAME_OPTIONS_HELP),
+                   CHOOSER_Labels,   dgg->game_opts_list,
+                   CHOOSER_Selected, 0,
+                 TAG_DONE),
+                 LAYOUT_AddChild, IIntuition->NewObject(SpaceClass, NULL, //"space.gadget",
+                   SPACE_MinHeight, 10,
+                 TAG_DONE),
+                 LAYOUT_AddChild, OBJ(OID_SAVESTATES) = IIntuition->NewObject(ChooserClass, NULL, //"chooser.gadget",
+                   GA_ID,         OID_SAVESTATES,
+                   GA_RelVerify,  TRUE,
+                   GA_Underscore, 0,
+                   GA_HintInfo,  GetString(&li, MSG_GUI_SAVESTATES_HELP),
+                   CHOOSER_Labels,   dgg->savestates_list,
+                   CHOOSER_Selected, 0,
+                 TAG_DONE),
+                 //CHILD_WeightedWidth, 0,
+                 CHILD_Label, IIntuition->NewObject(LabelClass, NULL,// "label.image",
+                  LABEL_Text, GetString(&li, MSG_GUI_SAVESTATES),//"Load savestate",
+                 TAG_DONE),
+//               TAG_DONE), // END of // [RECGAME + SAVESTATES]
+               LAYOUT_AddChild, IIntuition->NewObject(SpaceClass, NULL, //"space.gadget",
+                 SPACE_MinHeight, 10,
                TAG_DONE),
-               //CHILD_WeightedWidth, 0,
-               CHILD_Label, IIntuition->NewObject(LabelClass, NULL,// "label.image",
-                LABEL_Text, GetString(&li, MSG_GUI_SAVESTATES),//"Load savestate",
-               TAG_DONE),
+// TOTALROMS
                LAYOUT_AddChild, OBJ(OID_TOTALROMS) = IIntuition->NewObject(ButtonClass, NULL, //"button.gadget",
                  //GA_ID,         OID_TOTALROMS,
                  //GA_RelVerify,  TRUE,
                  GA_ReadOnly,   TRUE,
                  GA_Underscore, 0,
                  GA_Text,       GetString(&li, MSG_GUI_TOTALROMS),
+                 //GA_HintInfo,  GetString(&li, MSG_GUI_DGENEXEX_HELP),
                  BUTTON_Justification, BCJ_LEFT,
                  BUTTON_BevelStyle,    BVS_NONE,
                  BUTTON_Transparent,   TRUE,
@@ -354,7 +550,7 @@ DBUG("CreateGUIwindow()\n",NULL);
                //CHILD_WeightedWidth,  0,
                CHILD_WeightedHeight, 0,
 
-             TAG_DONE), // END of BUTTON/IMAGE + [SAVESTATES + TOTALROMS]
+             TAG_DONE), // END of BUTTON/IMAGE + [RECGAME + SAVESTATES] + TOTALROMS
              CHILD_WeightedWidth, 40,
 
          TAG_DONE), // END of ROM LIST + PREVIEW BUTTON
@@ -366,17 +562,20 @@ DBUG("CreateGUIwindow()\n",NULL);
            LAYOUT_AddChild, IIntuition->NewObject(ButtonClass, NULL, //"button.gadget",
             GA_ID,        OID_ABOUT,
             GA_RelVerify, TRUE,
-            GA_Text,      GetString(&li, MSG_GUI_ABOUT_BTN),//"About"
+            GA_Text,      GetString(&li, MSG_GUI_ABOUT_BTN),//"About..."
+            GA_HintInfo,  GetString(&li, MSG_GUI_ABOUT_BTN_HELP),
            TAG_DONE),
            LAYOUT_AddChild, IIntuition->NewObject(ButtonClass, NULL, //"button.gadget",
             GA_ID,        OID_SAVE,
             GA_RelVerify, TRUE,
             GA_Text,      GetString(&li, MSG_GUI_SAVE_BTN),//"Save settings"
+            GA_HintInfo,  GetString(&li, MSG_GUI_SAVE_BTN_HELP),
            TAG_DONE),
            LAYOUT_AddChild, IIntuition->NewObject(ButtonClass, NULL, //"button.gadget",
             GA_ID,        OID_QUIT,
             GA_RelVerify, TRUE,
             GA_Text,      GetString(&li, MSG_GUI_QUIT_BTN),//"Quit",
+            GA_HintInfo,  GetString(&li, MSG_GUI_QUIT_BTN_HELP),
            TAG_DONE),
           TAG_DONE), // END of BUTTONS
           CHILD_WeightedHeight, 0,
