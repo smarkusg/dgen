@@ -558,13 +558,13 @@ next_rom:
        strcat(wm_title, " ROMNAME: ");
        strcat(wm_title, megad->romname);
        if (demo_status == DEMO_RECORD) {
-           strcat(wm_title, " [->* PLAY and REC *<-]");
+           strcat(wm_title, " [*PLAY]");
        }
        else {
          if (demo_status == DEMO_PLAY)
-           strcat(wm_title, " [-> PLAYBACK <-]");
+           strcat(wm_title, " [>PLAYBACK]");
        }
-       SDL_WM_SetCaption(wm_title ,"Dgen" );
+       SDL_WM_SetCaption(wm_title ,"DGEN-SDL1" );
 #endif
 
 	// Load up save RAM
