@@ -164,7 +164,7 @@ Mostra informazioni su DGenGUI
 ;
 MSG_GUI_SAVE_BTN_HELP
 Salva i tooltype:\n\
-\033bCARTELLA ROMS\033n
+\033bROMS_DRAWER\033n
 ; Save tooltypes:\n\
 ; \033bROMS_DRAWER\033n
 ;
