@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (25.02.2024)
+## version $VER: dgengui.catalog 1.1 (29.02.2024)
 ## codeset 5
 ## language polish
 ## chunk AUTH Translated by smarkusg
@@ -77,4 +77,72 @@ _Zapisz ustawienia
 MSG_GUI_QUIT_BTN
 _Wyj¶cie
 ; _Quit
+;
+MSG_GUI_GAME_RUN
+Zagraj w wybran grê
+;Play selected game
+;
+MSG_GUI_GAME_REC
+Zagraj i zapisz nagranie wybranej gry
+;Play & Record selected game
+;
+MSG_GUI_GAME_PLAY_REC
+Otwarzanie nagrania gry
+;Playback recorded game
+;
+MSG_GUI_ROMDRAWER_HELP
+Wybrany katalog z plikami ROM Genesis/MD.
+;Select drawer with Genesis/MD ROMs.
+;
+MSG_GUI_DGENEXEX_HELP
+Wybierz pomiêdzy wersja SDL1 lub SDL2 (wykorzystano\n\
+SDL1.2compat) do uruchomienia.
+;Choose between SDL1 or SDL2 (uses\n\
+;SDL1.2compat) versions of executable.
+;
+MSG_GUI_LISTBROWSER_HELP
+Lista plików ROM Genesis/MD.\n\
+Podwó³jne klikniêcie jest traktowane jak klikniêcie\n\
+w obrazek/przycisk.
+;List of Genesis/MD ROMs.\n\
+;Double click is like clicking\n\
+;on image/button.
+;
+OID_PREVIEW_BTN_HELP
+Kliknij, aby \"uruchomiæ" ROM.\n\
+Zale¿y od poni¿szej opcji (zabraj, \n\
+Zagraj i zapisz nagranie lub odtwarzanie).
+;Click to \"launch\" ROM.\n\
+;Depends on below option (play,\n\
+;play&rec. or playback).
+;
+MSG_GUI_GAME_OPTIONS_HELP
+\033bZagraj\033n: tryb normalnej gry.\n\
+\033bZagraj i zapisz\033n: tryb zapisu przebiegu gry\n\
+ w trackcie rozgrywki\n\
+\033bOtwarzanie\033n: tryb odtwarzania zapisu \n\
+ poprzedniej rozgrywki\n\
+;\033bPlay\033n: just like a normal game.\n\
+;\033bPlay&Record\033n: record a demo of\n\
+; the game you are playing\n\
+;\033bPlayback\033n: play back a previously\n\
+; recorded demo.
+;
+MSG_GUI_SAVESTATES_HELP
+Lista zapisanych dostêpnych "slotów".
+;List of saved \"slots\" availables.
+;
+MSG_GUI_ABOUT_BTN_HELP
+Poka¿ informacje o DGenGUI
+;Show about DGenGUI
+;
+MSG_GUI_SAVE_BTN_HELP
+Zapisz typy tooltypes: \n\
+\033bSZYFLADA_PLIKÃ“W_ROM\033n
+;Save tooltypes:\n\
+;\033bROMS_DRAWER\033n
+;
+MSG_GUI_QUIT_BTN_HELP
+Wyj¶cie z DGenGUI
+;Quit DGenGUI
 ;
