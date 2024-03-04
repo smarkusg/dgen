@@ -558,7 +558,7 @@ next_rom:
        strcat(wm_title, " ROMNAME: ");
        strcat(wm_title, megad->romname);
        if (demo_status == DEMO_RECORD) {
-           strcat(wm_title, " [*PLAY]");
+           strcat(wm_title, " [*REC]");
        }
        else {
          if (demo_status == DEMO_PLAY)
