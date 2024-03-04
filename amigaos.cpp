@@ -117,7 +117,7 @@ void AmigaOS_ParseArg(int argc, char *argv[], int *new_argc, char ***new_argv)
 		return ; // We never know !
 	}
 
-	if (WBStartup->sm_NumArgs > 1)
+	if ((WBStartup->sm_NumArgs > 1) && (!argc))
 	{
 		// The first arg is always the tool name (aka us)
 		// Then if more than one arg, with have some file name
