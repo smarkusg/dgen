@@ -469,14 +469,21 @@ void free_chooserlist_nodes(struct List *list)
 
 void GetSavestates(struct DGenGUI *dgg, STRPTR fn)
 {
-	APTR context;
-	struct Node *node;
-	STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_END),
-	       pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_END);
+    APTR context;
+    struct Node *node;
+    STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_END),
+           pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_END);
+    int32 i = 0, j = 0;
 DBUG("GetSavestates()\n",NULL);
-	IUtility->Strlcpy(filestate, fn, MAX_DOS_FILENAME);
-	IUtility->Strlcat(filestate, ".gs[0-9]", MAX_DOS_FILENAME);
-DBUG("  searching '%s':\n",filestate);
+    //IUtility->Strlcpy(filestate, fn, MAX_DOS_FILENAME);
+    for(; i!=IUtility->Strlen(fn); ++i,++j) { // "neutralize" '( and ')' in ParsePatternNoCase()
+        if(fn[i]=='('  ||  fn[i]==')') { filestate[j++] = '\''; }
+        filestate[j] = fn[i];
+    }
+    filestate[j] = '\0';
+//DBUG("  [neutralized] %s\n",filestate);
+    IUtility->Strlcat(filestate, ".gs[0-9]", MAX_DOS_FILENAME);
+DBUG("  searching \"%s\":\n",filestate);
 
 	// Detach chooser list
 	IIntuition->SetAttrs(OBJ(OID_SAVESTATES), CHOOSER_Labels,0, TAG_DONE);

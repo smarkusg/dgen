@@ -5,7 +5,7 @@
 
 #include <exec/types.h>
 
-#define AMIGA_VERSION "DGen/SDL 1.33 (16.02.2024)"
+#define AMIGA_VERSION "DGen/SDL 1.33 (5.03.2024)"
 
 int AmigaOS_Open(int argc, char *argv[]); // returns -1 if a problem
 void AmigaOS_Close(void);
