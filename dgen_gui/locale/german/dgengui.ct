@@ -30,9 +30,9 @@ _OK
 ;
 MSG_GUI_ABOUT_TEXT
  \033c\033b%s %s\033n\n\n\
-GUI fÃ¼r Dgen von Javier de las Rivas\n\n\
-Danksagung: kas1e, samo79,smarkusg, \n\
-McFly,Maijestro und all jene, die vergessen wurden zu erwÃ¤hnen.
+GUI für Dgen von Javier de las Rivas\n\n\
+Danksagung: kas1e, samo79, smarkusg, \n\
+ McFly, Maijestro und all jene, die vergessen wurden zu erwähnen.
 ; \033c\033b%s %s\033n\n\n\
 ; GUI for DGen, OS4 port by Marek Glogowski\n\n\
 ; Acknowlegdments: kas1e, samo79,\n\
