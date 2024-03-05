@@ -1,0 +1,158 @@
+## version $VER: dgengui.catalog 1.1 (29.02.2024)
+## codeset 4
+## language german
+## chunk AUTH Translated by Maijestro
+;
+MSG_ERROR_NOROMS
+Keine Roms gefunden
+; No roms found.
+;
+MSG_ERROR_REQUIRED
+Erforderliche Bibliothek/Klassen konnten nicht gefunden werden.
+; Couldn't find required library/classes.
+;
+MSG_ERROR_ROMDRAWER
+\033cKann ROM-Ordner nicht laden:\n%s
+; \033cFailed to load ROM drawer:\n%s.
+; IOERR_STRING
+;
+MSG_ERROR_LAUNCHING
+Fehler beim Starten der ausführbaren Datei dgen!
+; Error launching dgen executable!
+;
+MSG_ERROR_GUI_NOPREVIEW
+ Vorschau nicht verfügbar
+; Preview not available
+;
+MSG_OK_GAD
+_OK
+; _OK
+;
+MSG_GUI_ABOUT_TEXT
+ \033c\033b%s %s\033n\n\n\
+GUI fÃ¼r Dgen von Javier de las Rivas\n\n\
+Danksagung: kas1e, samo79,smarkusg, \n\
+McFly,Maijestro und all jene, die vergessen wurden zu erwÃ¤hnen.
+; \033c\033b%s %s\033n\n\n\
+; GUI for DGen, OS4 port by Marek Glogowski\n\n\
+; Acknowlegdments: kas1e, samo79,\n\
+; smarkusg and everyone I forget.
+;
+MSG_GUI_TITLE_COL_ROM
+Rom/Spiel
+; Game
+;
+MSG_GUI_TITLE_COL_FMT
+Format
+; Format
+;
+MSG_GUI_ROMDRAWER
+ Roms:
+;  ROMS:
+;
+MSG_GUI_ROMDRAWER_TITLE
+ROMs-Schublade auswählen
+; Select ROMs drawer
+;
+MSG_GUI_SAVESTATES
+Gespeicherten Steckplatz laden
+;  Load saved slot
+; space at beginning to not being too close to rom listbrowser
+;
+MSG_GUI_SAVESTATES_NO
+Nein
+; No
+;
+MSG_GUI_TOTALROMS
+%ld verfügbare Roms
+;  %ld roms availables
+; space at beginning to not being too close to rom listbrowser
+;
+; MSG_GUI_OPTIONS_GROUP
+; Optionen
+; Options
+;
+MSG_GUI_GAME_RUN
+Ausgewähltes Spiel starten
+; Play selected game
+;
+MSG_GUI_GAME_REC
+Ausgewähltes Spiel starten & aufnehmen
+; Play & Record selected game
+;
+MSG_GUI_GAME_PLAY_REC
+Aufgezeichnetes Spiel wiedergeben
+; Playback recorded game
+;
+; MSG_GUI_RECGAME_FILE_TITLE
+; Wählen Sie den Pfad und den Namen des Aufzeichnungsspiels
+; Select record game path and name
+;
+MSG_GUI_ABOUT_BTN
+Über...
+; About...
+;
+MSG_GUI_SAVE_BTN
+Einstellungen speichern
+; Save settings
+;
+MSG_GUI_QUIT_BTN
+Beenden
+; Quit
+;
+MSG_GUI_ROMDRAWER_HELP
+Wählen Sie eine Schublade mit Genesis/MD-ROMs.
+; Select drawer with Genesis/MD ROMs.
+;
+MSG_GUI_DGENEXEX_HELP
+Wählen Sie zwischen SDL1 oder SDL2\n\
+SDL1 oder SDL2 (verwenden Sie SDL1.2compat).
+; Choose between SDL1 or SDL2 (uses\n\
+; SDL1.2compat) versions of executable.
+;
+MSG_GUI_LISTBROWSER_HELP
+Liste der Genesis/MD ROMs.\n\
+Doppelklick ist wie Klicken\n\
+auf Bild/Button.
+; List of Genesis/MD ROMs.\n\
+; Double click is like clicking\n\
+; on image/button.
+;
+OID_PREVIEW_BTN_HELP
+Klicken Sie zum Starten auf das ROM.\n\
+Hängt von der untenstehenden Option ab (play,\n\
+Spielen & Aufnehmen oder Abspielen
+; Click to \"launch\" ROM.\n\
+; Depends on below option (play,\n\
+; play&rec. or playback).
+;
+MSG_GUI_GAME_OPTIONS_HELP
+\033bPlay\\033n: genau wie ein normales Spiel.\n\
+\033bSpielen&Aufnehmen\033n: Aufnahme einer Demo von\n\
+das Spiel, das Sie spielen\n\
+\033bWiedergabe\033n: Wiedergabe eines Vorgängers\n\
+ aufgenommene Demo
+; \033bPlay\033n: just like a normal game.\n\
+; \033bPlay&Record\033n: record a demo of\n\
+;  the game you are playing\n\
+; \033bPlayback\033n: play back a previously\n\
+; recorded demo.
+;
+MSG_GUI_SAVESTATES_HELP
+Liste der gespeicherten Slots\\ verfügbar.
+; List of saved \"slots\" availables.
+;
+MSG_GUI_ABOUT_BTN_HELP
+Mostra informazioni su DGenGUI
+; Über DGenGUI anzeigen
+;
+MSG_GUI_SAVE_BTN_HELP
+Tooltypen speichern:\n\
+\033bROMS_ORDNER\033n
+; Save tooltypes:\n\
+; \033bROMS_DRAWER\033n
+;
+MSG_GUI_QUIT_BTN_HELP
+Beenden DGenGUI
+; Quit DGenGUI
+;
