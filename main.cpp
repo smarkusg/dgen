@@ -271,8 +271,6 @@ int main(int argc, char *argv[])
 	   "s:hvr:n:p:R:NPH:d:D:",
 	   pd_options);
 
-//lol ?
-
 #ifdef __AMIGAOS4__
   {
 
@@ -281,7 +279,7 @@ int main(int argc, char *argv[])
 
     if (argc<=1) {
      AmigaOS_ParseArg(argc, argv, &new_argc, &new_argv);
-        /* nie wybrano nic z wyboru pliku */
+        /* nothing selected */
         if (new_argc==0 && new_argv==NULL)
           return 0;
 
@@ -553,7 +551,7 @@ next_rom:
 #ifdef __AMIGAOS4__
        // SDL Caption
        static char wm_title [ 512 ] ;
-       /*markus - dodaje tu - wim ze rom zaladowany i prosty dostep do nazwy fixme */
+
        strcpy(wm_title, AMIGA_VERSION);
        strcat(wm_title, " ROMNAME: ");
        strcat(wm_title, megad->romname);

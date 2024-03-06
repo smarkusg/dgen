@@ -229,7 +229,7 @@ error_select:
 	/* nothing selected */
 	*new_argc = 0;
 	*new_argv = NULL;
-	return;
+
 }
 
 

@@ -981,7 +981,7 @@ int md::load(const char *name)
 	    ((b_name = dgen_basename(name)) == NULL))
 		return 1;
 	temp = load_rom(&size, name, (char*)error_msg);
-//markus
+
 	if (temp == NULL) {
 #ifdef __AMIGAOS4__
                EasyRequester(strdup((char*)error_msg),
