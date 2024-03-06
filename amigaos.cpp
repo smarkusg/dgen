@@ -186,11 +186,10 @@ void AmigaOS_ParseArg(int argc, char *argv[], int *new_argc, char ***new_argv)
 		{
 			FreeAslRequest(AmigaOS_FileRequester);
 			AmigaOS_FileRequester = NULL;
-			/* nic nie wybrano */
-			*new_argc = 0;
-			*new_argv = NULL;
-    			return;
+			goto error_select;
 		}
+
+		if (!AmigaOS_FileRequester->fr_NumArgs) goto error_select;
 
 		AmigaOS_argc = AmigaOS_FileRequester->fr_NumArgs + 1;
 		AmigaOS_argv = (char **)   malloc(AmigaOS_argc * sizeof(char *) );
@@ -222,9 +221,15 @@ void AmigaOS_ParseArg(int argc, char *argv[], int *new_argc, char ***new_argv)
 	
 
 fail:
-
 	*new_argc = argc;
 	*new_argv = argv;
+	return;
+
+error_select:
+	/* nothing selected */
+	*new_argc = 0;
+	*new_argv = NULL;
+	return;
 }
 
 
