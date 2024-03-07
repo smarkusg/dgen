@@ -1,0 +1,13 @@
+# DGen 1.33 configuration file.
+# See dgenrc(5) for more information.
+key_fix_checksum = "F4"
+key_fullscreen_toggle = "F1"
+bool_fullscreen = false
+key_stop = "p"
+bool_sound = true
+scaling_startup = "scale2x"
+bool_fps = false
+int_width = -1
+int_height = -1
+int_opengl_width = -1
+int_opengl_height = -1
