@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (29.02.2024)
+## version $VER: dgengui.catalog 1.1 (7.03.2024)
 ## codeset 4
 ## language italiano
 ## chunk AUTH Translated by Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
@@ -11,7 +11,7 @@
 ;
 ; Traduzione italiana di dgengui
 ;
-; $VER: dgengui.cd 1.1 (29.02.2024)
+; $VER: dgengui.cd 1.1 (6.03.2024)
 ;
 MSG_ERROR_NOROMS
 Nessuna ROM trovata
@@ -66,8 +66,8 @@ MSG_GUI_ROMDRAWER
 ;  ROMS:
 ;
 MSG_GUI_ROMDRAWER_TITLE
-Seleziona cartella delle ROM
-; Select ROMs drawer
+Seleziona percorso della cartella ROM
+; Select ROMs path
 ;
 MSG_GUI_SAVESTATES
  Carica slot salvataggio
@@ -77,6 +77,10 @@ MSG_GUI_SAVESTATES
 MSG_GUI_SAVESTATES_NO
 Nessuno
 ; No
+;
+MSG_GUI_FORCELOWRES
+Forza 320x256
+; Force 320x256
 ;
 MSG_GUI_TOTALROMS
  %ld rom disponibili
@@ -156,7 +160,12 @@ demo registrata in precedenza
 ;
 MSG_GUI_SAVESTATES_HELP
 Elenco degli \"slot\" salvati disponibili
-; List of saved \"slots\" availables.
+; List availables saved \"slots\"\n\
+; from selected ROM.
+;
+MSG_GUI_FORCELOWRES_HELP
+Forza apertura della finestra a 320x256
+; Force to open window in 320x256.
 ;
 MSG_GUI_ABOUT_BTN_HELP
 Mostra informazioni su DGenGUI
