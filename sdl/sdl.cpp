@@ -2550,7 +2550,7 @@ static void filter_scale2x(const struct filter_data *in,
 	process:
 		// Feed this to scale2x.
 		scale(mode, out->buf.u32, out->pitch, in->buf.u32, in->pitch,
-		      screen.Bpp, in->width, in->height);
+		      screen.Bpp, in->width, in->height,0);
 		return;
 	}
 	// Initialize filter.
@@ -6967,7 +6967,7 @@ void pd_quit()
 	if (mdpal)
 		mdpal = NULL;
 #ifdef WITH_OPENGL
-	release_texture(screen.texture);
+//lol	release_texture(screen.texture);
 #endif
 	free(filters_stack_data_buf[0].u8);
 	free(filters_stack_data_buf[1].u8);
