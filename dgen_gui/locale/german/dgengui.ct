@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (29.02.2024)
+## version $VER: dgengui.catalog 1.1 (8.03.2024)
 ## codeset 4
 ## language german
 ## chunk AUTH Translated by Maijestro
@@ -137,6 +137,14 @@ das Spiel, das Sie spielen\n\
 ;  the game you are playing\n\
 ; \033bPlayback\033n: play back a previously\n\
 ; recorded demo.
+;
+MSG_GUI_FORCELOWRES
+Force 320x256
+;Force 320x256
+;
+MSG_GUI_FORCELOWRES_HELP
+Force to open window in 320x256.
+;Force to open window in 320x256.
 ;
 MSG_GUI_SAVESTATES_HELP
 Liste der gespeicherten Slots\\ verfügbar.
