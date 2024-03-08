@@ -128,6 +128,14 @@ MSG_GUI_GAME_OPTIONS_HELP
 ; \033bPlayback\033n: play back a previously\n\
 ; recorded demo.
 ;
+MSG_GUI_FORCELOWRES
+Wymuszenie 320x256
+;Force 320x256
+;
+MSG_GUI_FORCELOWRES_HELP
+Wymuszenie otwarcia okna w 320x256.
+;Force to open window in 320x256.
+;
 MSG_GUI_SAVESTATES_HELP
 Lista zapisanych dostêpnych "slotów".
 ; List of saved \"slots\" availables.
