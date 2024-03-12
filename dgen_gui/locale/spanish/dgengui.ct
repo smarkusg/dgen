@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (25.02.2024)
+## version $VER: dgengui.catalog 1.1 (11.03.2024)
 ## codeset 4
 ## language spanish
 ;
@@ -29,8 +29,8 @@ _Aceptar
 MSG_GUI_ABOUT_TEXT
 \033c\033b%s %s\033n\n\n\
 GUI para DGen, OS4 port por Marek Glogowski\n\n\
-Agradecimientos: kas1e, samo79,\n\
-smarkusg y a todo el mundo.\n\n\
+Agradecimientos: kas1e, Maijestr, McFly,\n\
+samo79, smarkusg y a todo el mundo.\n\n\
 (Traducción: Javier de las Rivas)
 ; \033c\033b%s %s\033n\n\n\
 ; GUI for DGen, OS4 port by Marek Glogowski\n\n\
@@ -47,34 +47,119 @@ Formato
 ; Format
 ;
 MSG_GUI_ROMDRAWER
-_ROMS:
-;  _ROMS:
+ ROMS:
+;  ROMS:
 ;
 MSG_GUI_ROMDRAWER_TITLE
-Elegir cajón con ROMs Genesis/MD
+Ubicación con ROMs de Genesis/MD
 ; Select ROMs drawer
 ;
-MSG_GUI_TOTALROMS
- %ld roms disponibles
-;  %ld roms availables
-;
 MSG_GUI_SAVESTATES
- Cargar \"slot\" guardado
-;  Load saved slot
+Cargar \"slot\" guardado
+; Load saved slot
 ;
 MSG_GUI_SAVESTATES_NO
 No
 ; No
 ;
+MSG_GUI_FORCELOWRES
+Forzar baja resolución
+; Force \"lowres\"
+;
+MSG_GUI_FORCELOWRES_NO
+No
+; No
+;
+MSG_GUI_TOTALROMS
+ %ld roms disponibles
+;  %ld roms availables
+;
+MSG_GUI_GAME_RUN
+Jugar ROM seleccionada
+; Play selected game
+;
+MSG_GUI_GAME_REC
+Jugar y Grabar ROM seleccionada
+; Play & Record selected game
+;
+MSG_GUI_GAME_PLAY_REC
+Reproducir partida grabada
+; Playback recorded game
+;
 MSG_GUI_ABOUT_BTN
-_Acerca de...
+Acerca de...
 ; _About...
 ;
 MSG_GUI_SAVE_BTN
-_Guardar ajustes
+Guardar ajustes
 ; _Save settings
 ;
 MSG_GUI_QUIT_BTN
-_Salir
+Salir
 ; _Quit
+;
+MSG_GUI_ROMDRAWER_HELP
+Ubicación con ROMs de Genesis/MD.
+; Select drawer with Genesis/MD ROMs.
+;
+MSG_GUI_DGENEXEX_HELP
+Versión SDL1 o SDL2 (usa SDL1.2compat)\n\
+del ejecutable a usar.
+; Choose between SDL1 or SDL2 (uses\n\
+; SDL1.2compat) versions of executable.
+;
+MSG_GUI_LISTBROWSER_HELP
+Lista de ROMs/juegos de Genesis/MD.\n\
+Doble clic para \"lanzar\" la ROM.
+; List of Genesis/MD ROMs.\n\
+; Double click to \"launch\" ROM.
+;
+OID_PREVIEW_BTN_HELP
+Clic para \"lanzar\" la ROM.\n\
+Depende de la opción de abajo (jugar,\n\
+jugar+grabar o reproducir).
+; Click to \"launch\" ROM.\n\
+; Depends on below option (play,\n\
+; play&rec. or playback).
+;
+MSG_GUI_GAME_OPTIONS_HELP
+\033bJugar\033n: carga la ROM para jugar.\n\
+\033bJugar y Grabar\033n: grabar la partida\n\
+ que estás jugando.\n\
+\033bReproducir\033n: reproducir la partida\n\
+ grabada.
+; \033bPlay\033n: loads rom for playing.\n\
+; \033bPlay&Record\033n: record a demo of\n\
+;  the game you are playing.\n\
+; \033bPlayback\033n: play back a previously\n\
+;  recorded demo.
+;
+MSG_GUI_SAVESTATES_HELP
+Lista de \"slots\" con grabaciones\n\
+de la ROM seleccionada.
+; List availables saved \"slots\"\n\
+; from selected ROM.
+;
+MSG_GUI_FORCELOWRES_HELP
+Forzar abrir la ventana\n\
+en baja resolución.
+; Force to open window\n\
+; in \"lowres\".
+;
+MSG_GUI_ABOUT_BTN_HELP
+Mostrar acerca de DGenGUI
+; Show about DGenGUI
+;
+MSG_GUI_SAVE_BTN_HELP
+Guardar argumentos de\n\
+icono (\"Tooltypes\"):\n\
+\033bROMS_DRAWER\n\
+DGEN_SDL\n\
+FORCE_LOWRES\033n
+; Save tooltypes:\n\
+; \033bROMS_DRAWER\033n
+;
+MSG_GUI_QUIT_BTN_HELP
+Salir de DGenGUI
+; Quit DGenGUI
 ;

@@ -1,4 +1,4 @@
-; $VER: dgengui.cd 1.1 (29.02.2024)
+; $VER: dgengui.cd 1.1 (7.03.2024)
 ;
 ;
 MSG_ERROR_NOROMS (1//)
@@ -24,8 +24,8 @@ _OK
 MSG_GUI_ABOUT_TEXT (//200)
 \033c\033b%s %s\033n\n\n\
 GUI for DGen, OS4 port by Marek Glogowski\n\n\
-Acknowlegdments: kas1e, samo79,\n\
-smarkusg and everyone I forget.\n\n\
+Acknowlegdments: kas1e, Maijestr, McFly,\n\
+samo79, smarkusg and everyone I forget.\n\n\
 (using built-in strings)
 ;VERS DATE (and change 'built-in..' with translator data, keep as short as possible)
 ;
@@ -40,13 +40,19 @@ MSG_GUI_ROMDRAWER (//)
  ROMS:
 ;
 MSG_GUI_ROMDRAWER_TITLE (//)
-Select ROMs drawer
+Select ROMs path
 ;
 MSG_GUI_SAVESTATES (//)
- Load saved slot
-;space at beginning to not being too close to rom listbrowser
+Load saved slot
 ;
 MSG_GUI_SAVESTATES_NO (//)
+No
+;
+MSG_GUI_FORCELOWRES (//)
+Force \"lowres\"
+;Force 320x256
+;
+MSG_GUI_FORCELOWRES_NO (//)
 No
 ;
 MSG_GUI_TOTALROMS (//)
@@ -79,7 +85,7 @@ Quit
 ;
 ;
 MSG_GUI_ROMDRAWER_HELP (500//)
-Select drawer with Genesis/MD ROMs.
+Path with Genesis/MD ROMs.
 ;
 MSG_GUI_DGENEXEX_HELP (//)
 Choose between SDL1 or SDL2 (uses\n\
@@ -87,8 +93,7 @@ SDL1.2compat) versions of executable.
 ;
 MSG_GUI_LISTBROWSER_HELP (//)
 List of Genesis/MD ROMs.\n\
-Double click is like clicking\n\
-on image/button.
+Double click to \"launch\" ROM.
 ;
 OID_PREVIEW_BTN_HELP (//)
 Click to \"launch\" ROM.\n\
@@ -96,21 +101,29 @@ Depends on below option (play,\n\
 play&rec. or playback).
 ;
 MSG_GUI_GAME_OPTIONS_HELP (//)
-\033bPlay\033n: loads rom for playing.\n\
+\033bPlay\033n: loads ROM for playing.\n\
 \033bPlay&Record\033n: record a demo of\n\
  the game you are playing.\n\
 \033bPlayback\033n: play back a previously\n\
  recorded demo.
 ;
 MSG_GUI_SAVESTATES_HELP (//)
-List availables saved \"slots\".
+List availables saved \"slots\"\n\
+from selected ROM.
+;
+MSG_GUI_FORCELOWRES_HELP (//)
+Force to open window\n\
+in \"lowres\".
+;in 320x256 (lowres).
 ;
 MSG_GUI_ABOUT_BTN_HELP (//)
 Show about DGenGUI
 ;
 MSG_GUI_SAVE_BTN_HELP (//)
 Save tooltypes:\n\
-\033bROMS_DRAWER\033n
+\033bROMS_DRAWER\n\
+DGEN_SDL\n\
+FORCE_LOWRES\033n
 ;
 MSG_GUI_QUIT_BTN_HELP (//)
 Quit DGenGUI
