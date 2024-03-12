@@ -1,4 +1,4 @@
-## version $VER: dgengui.catalog 1.1 (7.03.2024)
+## version $VER: dgengui.catalog 1.1 (11.03.2024)
 ## codeset 4
 ## language italiano
 ## chunk AUTH Translated by Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
@@ -11,7 +11,7 @@
 ;
 ; Traduzione italiana di dgengui
 ;
-; $VER: dgengui.cd 1.1 (6.03.2024)
+; $VER: dgengui.cd 1.1 (7.03.2024)
 ;
 MSG_ERROR_NOROMS
 Nessuna ROM trovata
@@ -71,7 +71,7 @@ Seleziona percorso della cartella ROM
 ;
 MSG_GUI_SAVESTATES
  Carica slot salvataggio
-;  Load saved slot
+; Load saved slot
 ; space at beginning to not being too close to rom listbrowser
 ;
 MSG_GUI_SAVESTATES_NO
@@ -79,8 +79,13 @@ Nessuno
 ; No
 ;
 MSG_GUI_FORCELOWRES
-Forza 320x256
+Forza bassa risoluzione
+; Force \"lowres\"
 ; Force 320x256
+;
+MSG_GUI_FORCELOWRES_NO
+Nessuna
+; No
 ;
 MSG_GUI_TOTALROMS
  %ld rom disponibili
@@ -121,7 +126,7 @@ Esci
 ;
 MSG_GUI_ROMDRAWER_HELP
 Seleziona cartella delle ROM Genesis/MD
-; Select drawer with Genesis/MD ROMs.
+; Path with Genesis/MD ROMs.
 ;
 MSG_GUI_DGENEXEX_HELP
 Seleziona uno tra gli eseguibili disponibili\n\
@@ -135,8 +140,7 @@ Puoi far partire il gioco con un\n\
 semplice doppio click, oppure\n\
 cliccando sull'immagine
 ; List of Genesis/MD ROMs.\n\
-; Double click is like clicking\n\
-; on image/button.
+; Double click to \"launch\" ROM.
 ;
 OID_PREVIEW_BTN_HELP
 Clicca per \"avviare\" la ROM selezionata\n\
@@ -152,11 +156,11 @@ MSG_GUI_GAME_OPTIONS_HELP
 del gioco a cui stai giocando\n\
 \033bAvvia registrazione\033n: riproduci una\n\
 demo registrata in precedenza
-; \033bPlay\033n: just like a normal game.\n\
+; \033bPlay\033n: loads ROM for playing.\n\
 ; \033bPlay&Record\033n: record a demo of\n\
-;  the game you are playing\n\
+;  the game you are playing.\n\
 ; \033bPlayback\033n: play back a previously\n\
-; recorded demo.
+;  recorded demo.
 ;
 MSG_GUI_SAVESTATES_HELP
 Elenco degli \"slot\" salvati disponibili
@@ -164,8 +168,11 @@ Elenco degli \"slot\" salvati disponibili
 ; from selected ROM.
 ;
 MSG_GUI_FORCELOWRES_HELP
-Forza apertura della finestra a 320x256
-; Force to open window in 320x256.
+Forza apertura della finestra\n\
+in bassa risoluzione
+; Force to open window\n\
+; in \"lowres\".
+; in 320x256 (lowres).
 ;
 MSG_GUI_ABOUT_BTN_HELP
 Mostra informazioni su DGenGUI
@@ -173,9 +180,13 @@ Mostra informazioni su DGenGUI
 ;
 MSG_GUI_SAVE_BTN_HELP
 Salva i tooltype:\n\
-\033bROMS_DRAWER\033n
+\033bROMS_DRAWER\n\
+DGEN_SDL\n\
+FORCE_LOWRES\033n
 ; Save tooltypes:\n\
-; \033bROMS_DRAWER\033n
+; \033bROMS_DRAWER\n\
+; DGEN_SDL\n\
+; FORCE_LOWRES\033n
 ;
 MSG_GUI_QUIT_BTN_HELP
 Esci da DGenGUI
