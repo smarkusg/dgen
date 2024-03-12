@@ -68,7 +68,11 @@ MSG_GUI_TOTALROMS
 ;  %ld roms availables
 ; space at beginning to not being too close to rom listbrowser
 ;
-; MSG_GUI_OPTIONS_GROUP
+MSG_GUI_FORCELOWRES_NO
+Nein
+;No
+;
+;MSG_GUI_OPTIONS_GROUP
 ; Optionen
 ; Options
 ;
