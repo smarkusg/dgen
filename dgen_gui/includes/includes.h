@@ -19,14 +19,14 @@
 #include <libraries/keymap.h> // RAWKEY_#? codes
 #include <classes/window.h>
 #include <classes/requester.h>
-#include <gadgets/clicktab.h>
+//#include <gadgets/clicktab.h>
 #include <gadgets/layout.h>
 #include <gadgets/button.h>
-#include <gadgets/checkbox.h>
+//#include <gadgets/checkbox.h>
 #include <gadgets/chooser.h>
-#include <gadgets/string.h>
+//#include <gadgets/string.h>
 #include <gadgets/space.h>
-#include <gadgets/integer.h>
+//#include <gadgets/integer.h>
 #include <gadgets/getfile.h>
 #include <images/label.h>
 #include <images/bitmap.h>
@@ -66,6 +66,7 @@ enum {
  //OID_OPTIONS_GROUP,
  OID_GAME_OPTIONS,
  OID_SAVESTATES,
+ OID_FORCELOWRES,
  OID_TOTALROMS,
  // Buttons
  OID_ABOUT,
@@ -89,6 +90,8 @@ struct myToolTypes {
 	STRPTR romsdrawer;  // ROMS_DRAWER=<path>
 	int32 last_rom_run; // LAST_ROM_LAUNCHED=<value>
 	BOOL show_hints;    // SHOW_HINTS
+	int32 dgensdl_exec; // DGEN_SDL=<value> (1|2)
+	int32 force_lowres; // FORCE_LOWRES=<value> (0|1|2)
 	//STRPTR newttp, ttpBuf1, ttpBuf2; // only needed if using SaveToolType()
 };
 

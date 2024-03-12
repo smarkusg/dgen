@@ -54,22 +54,25 @@
 #define MSG_GUI_ROMDRAWER_TITLE 103
 #define MSG_GUI_SAVESTATES 104
 #define MSG_GUI_SAVESTATES_NO 105
-#define MSG_GUI_TOTALROMS 106
-#define MSG_GUI_GAME_RUN 107
-#define MSG_GUI_GAME_REC 108
-#define MSG_GUI_GAME_PLAY_REC 109
-#define MSG_GUI_ABOUT_BTN 110
-#define MSG_GUI_SAVE_BTN 111
-#define MSG_GUI_QUIT_BTN 112
+#define MSG_GUI_FORCELOWRES 106
+#define MSG_GUI_FORCELOWRES_NO 107
+#define MSG_GUI_TOTALROMS 108
+#define MSG_GUI_GAME_RUN 109
+#define MSG_GUI_GAME_REC 110
+#define MSG_GUI_GAME_PLAY_REC 111
+#define MSG_GUI_ABOUT_BTN 112
+#define MSG_GUI_SAVE_BTN 113
+#define MSG_GUI_QUIT_BTN 114
 #define MSG_GUI_ROMDRAWER_HELP 500
 #define MSG_GUI_DGENEXEX_HELP 501
 #define MSG_GUI_LISTBROWSER_HELP 502
 #define OID_PREVIEW_BTN_HELP 503
 #define MSG_GUI_GAME_OPTIONS_HELP 504
 #define MSG_GUI_SAVESTATES_HELP 505
-#define MSG_GUI_ABOUT_BTN_HELP 506
-#define MSG_GUI_SAVE_BTN_HELP 507
-#define MSG_GUI_QUIT_BTN_HELP 508
+#define MSG_GUI_FORCELOWRES_HELP 506
+#define MSG_GUI_ABOUT_BTN_HELP 507
+#define MSG_GUI_SAVE_BTN_HELP 508
+#define MSG_GUI_QUIT_BTN_HELP 509
 
 #endif /* CATCOMP_NUMBERS */
 
@@ -85,13 +88,15 @@
 #define MSG_ERROR_LAUNCHING_STR "Error launching dgen executable!"
 #define MSG_ERROR_GUI_NOPREVIEW_STR "Preview not available"
 #define MSG_OK_GAD_STR "_OK"
-#define MSG_GUI_ABOUT_TEXT_STR "\033c\033b%s %s\033n\n\nGUI for DGen, OS4 port by Marek Glogowski\n\nAcknowlegdments: kas1e, samo79,\nsmarkusg and everyone I forget.\n\n(using built-in strings)"
+#define MSG_GUI_ABOUT_TEXT_STR "\033c\033b%s %s\033n\n\nGUI for DGen, OS4 port by Marek Glogowski\n\nAcknowlegdments: kas1e, Maijestr, McFly,\nsamo79, smarkusg and everyone I forget.\n\n(using built-in strings)"
 #define MSG_GUI_TITLE_COL_ROM_STR "Game"
 #define MSG_GUI_TITLE_COL_FMT_STR "Format"
 #define MSG_GUI_ROMDRAWER_STR " ROMS:"
-#define MSG_GUI_ROMDRAWER_TITLE_STR "Select ROMs drawer"
-#define MSG_GUI_SAVESTATES_STR " Load saved slot"
+#define MSG_GUI_ROMDRAWER_TITLE_STR "Select ROMs path"
+#define MSG_GUI_SAVESTATES_STR "Load saved slot"
 #define MSG_GUI_SAVESTATES_NO_STR "No"
+#define MSG_GUI_FORCELOWRES_STR "Force \"lowres\""
+#define MSG_GUI_FORCELOWRES_NO_STR "No"
 #define MSG_GUI_TOTALROMS_STR " %ld roms availables"
 #define MSG_GUI_GAME_RUN_STR "Play selected game"
 #define MSG_GUI_GAME_REC_STR "Play & Record selected game"
@@ -99,14 +104,15 @@
 #define MSG_GUI_ABOUT_BTN_STR "About..."
 #define MSG_GUI_SAVE_BTN_STR "Save settings"
 #define MSG_GUI_QUIT_BTN_STR "Quit"
-#define MSG_GUI_ROMDRAWER_HELP_STR "Select drawer with Genesis/MD ROMs."
+#define MSG_GUI_ROMDRAWER_HELP_STR "Path with Genesis/MD ROMs."
 #define MSG_GUI_DGENEXEX_HELP_STR "Choose between SDL1 or SDL2 (uses\nSDL1.2compat) versions of executable."
-#define MSG_GUI_LISTBROWSER_HELP_STR "List of Genesis/MD ROMs.\nDouble click is like clicking\non image/button."
+#define MSG_GUI_LISTBROWSER_HELP_STR "List of Genesis/MD ROMs.\nDouble click to \"launch\" ROM."
 #define OID_PREVIEW_BTN_HELP_STR "Click to \"launch\" ROM.\nDepends on below option (play,\nplay&rec. or playback)."
-#define MSG_GUI_GAME_OPTIONS_HELP_STR "\033bPlay\033n: loads rom for playing.\n\033bPlay&Record\033n: record a demo of\n the game you are playing.\n\033bPlayback\033n: play back a previously\n recorded demo."
-#define MSG_GUI_SAVESTATES_HELP_STR "List availables saved \"slots\"."
+#define MSG_GUI_GAME_OPTIONS_HELP_STR "\033bPlay\033n: loads ROM for playing.\n\033bPlay&Record\033n: record a demo of\n the game you are playing.\n\033bPlayback\033n: play back a previously\n recorded demo."
+#define MSG_GUI_SAVESTATES_HELP_STR "List availables saved \"slots\"\nfrom selected ROM."
+#define MSG_GUI_FORCELOWRES_HELP_STR "Force to open window\nin \"lowres\"."
 #define MSG_GUI_ABOUT_BTN_HELP_STR "Show about DGenGUI"
-#define MSG_GUI_SAVE_BTN_HELP_STR "Save tooltypes:\n\033bROMS_DRAWER\033n"
+#define MSG_GUI_SAVE_BTN_HELP_STR "Save tooltypes:\n\033bROMS_DRAWER\nDGEN_SDL\nFORCE_LOWRES\033n"
 #define MSG_GUI_QUIT_BTN_HELP_STR "Quit DGenGUI"
 
 #endif /* CATCOMP_STRINGS */
@@ -138,6 +144,8 @@ STATIC CONST struct CatCompArrayType CatCompArray[] =
     {MSG_GUI_ROMDRAWER_TITLE,(CONST_STRPTR)MSG_GUI_ROMDRAWER_TITLE_STR},
     {MSG_GUI_SAVESTATES,(CONST_STRPTR)MSG_GUI_SAVESTATES_STR},
     {MSG_GUI_SAVESTATES_NO,(CONST_STRPTR)MSG_GUI_SAVESTATES_NO_STR},
+    {MSG_GUI_FORCELOWRES,(CONST_STRPTR)MSG_GUI_FORCELOWRES_STR},
+    {MSG_GUI_FORCELOWRES_NO,(CONST_STRPTR)MSG_GUI_FORCELOWRES_NO_STR},
     {MSG_GUI_TOTALROMS,(CONST_STRPTR)MSG_GUI_TOTALROMS_STR},
     {MSG_GUI_GAME_RUN,(CONST_STRPTR)MSG_GUI_GAME_RUN_STR},
     {MSG_GUI_GAME_REC,(CONST_STRPTR)MSG_GUI_GAME_REC_STR},
@@ -151,6 +159,7 @@ STATIC CONST struct CatCompArrayType CatCompArray[] =
     {OID_PREVIEW_BTN_HELP,(CONST_STRPTR)OID_PREVIEW_BTN_HELP_STR},
     {MSG_GUI_GAME_OPTIONS_HELP,(CONST_STRPTR)MSG_GUI_GAME_OPTIONS_HELP_STR},
     {MSG_GUI_SAVESTATES_HELP,(CONST_STRPTR)MSG_GUI_SAVESTATES_HELP_STR},
+    {MSG_GUI_FORCELOWRES_HELP,(CONST_STRPTR)MSG_GUI_FORCELOWRES_HELP_STR},
     {MSG_GUI_ABOUT_BTN_HELP,(CONST_STRPTR)MSG_GUI_ABOUT_BTN_HELP_STR},
     {MSG_GUI_SAVE_BTN_HELP,(CONST_STRPTR)MSG_GUI_SAVE_BTN_HELP_STR},
     {MSG_GUI_QUIT_BTN_HELP,(CONST_STRPTR)MSG_GUI_QUIT_BTN_HELP_STR},
@@ -178,51 +187,57 @@ STATIC CONST UBYTE CatCompBlock[] =
     MSG_ERROR_GUI_NOPREVIEW_STR "\x00"
     "\x00\x00\x00\x32\x00\x04"
     MSG_OK_GAD_STR "\x00"
-    "\x00\x00\x00\x33\x00\x92"
-    MSG_GUI_ABOUT_TEXT_STR "\x00"
+    "\x00\x00\x00\x33\x00\xA4"
+    MSG_GUI_ABOUT_TEXT_STR "\x00\x00"
     "\x00\x00\x00\x64\x00\x06"
     MSG_GUI_TITLE_COL_ROM_STR "\x00\x00"
     "\x00\x00\x00\x65\x00\x08"
     MSG_GUI_TITLE_COL_FMT_STR "\x00\x00"
     "\x00\x00\x00\x66\x00\x08"
     MSG_GUI_ROMDRAWER_STR "\x00\x00"
-    "\x00\x00\x00\x67\x00\x14"
+    "\x00\x00\x00\x67\x00\x12"
     MSG_GUI_ROMDRAWER_TITLE_STR "\x00\x00"
-    "\x00\x00\x00\x68\x00\x12"
-    MSG_GUI_SAVESTATES_STR "\x00\x00"
+    "\x00\x00\x00\x68\x00\x10"
+    MSG_GUI_SAVESTATES_STR "\x00"
     "\x00\x00\x00\x69\x00\x04"
     MSG_GUI_SAVESTATES_NO_STR "\x00\x00"
-    "\x00\x00\x00\x6A\x00\x16"
+    "\x00\x00\x00\x6A\x00\x10"
+    MSG_GUI_FORCELOWRES_STR "\x00\x00"
+    "\x00\x00\x00\x6B\x00\x04"
+    MSG_GUI_FORCELOWRES_NO_STR "\x00\x00"
+    "\x00\x00\x00\x6C\x00\x16"
     MSG_GUI_TOTALROMS_STR "\x00\x00"
-    "\x00\x00\x00\x6B\x00\x14"
+    "\x00\x00\x00\x6D\x00\x14"
     MSG_GUI_GAME_RUN_STR "\x00\x00"
-    "\x00\x00\x00\x6C\x00\x1C"
+    "\x00\x00\x00\x6E\x00\x1C"
     MSG_GUI_GAME_REC_STR "\x00"
-    "\x00\x00\x00\x6D\x00\x18"
+    "\x00\x00\x00\x6F\x00\x18"
     MSG_GUI_GAME_PLAY_REC_STR "\x00\x00"
-    "\x00\x00\x00\x6E\x00\x0A"
+    "\x00\x00\x00\x70\x00\x0A"
     MSG_GUI_ABOUT_BTN_STR "\x00\x00"
-    "\x00\x00\x00\x6F\x00\x0E"
+    "\x00\x00\x00\x71\x00\x0E"
     MSG_GUI_SAVE_BTN_STR "\x00"
-    "\x00\x00\x00\x70\x00\x06"
+    "\x00\x00\x00\x72\x00\x06"
     MSG_GUI_QUIT_BTN_STR "\x00\x00"
-    "\x00\x00\x01\xF4\x00\x24"
-    MSG_GUI_ROMDRAWER_HELP_STR "\x00"
+    "\x00\x00\x01\xF4\x00\x1C"
+    MSG_GUI_ROMDRAWER_HELP_STR "\x00\x00"
     "\x00\x00\x01\xF5\x00\x48"
     MSG_GUI_DGENEXEX_HELP_STR "\x00"
-    "\x00\x00\x01\xF6\x00\x48"
-    MSG_GUI_LISTBROWSER_HELP_STR "\x00"
+    "\x00\x00\x01\xF6\x00\x38"
+    MSG_GUI_LISTBROWSER_HELP_STR "\x00\x00"
     "\x00\x00\x01\xF7\x00\x4E"
     OID_PREVIEW_BTN_HELP_STR "\x00"
     "\x00\x00\x01\xF8\x00\x94"
     MSG_GUI_GAME_OPTIONS_HELP_STR "\x00\x00"
-    "\x00\x00\x01\xF9\x00\x20"
+    "\x00\x00\x01\xF9\x00\x32"
     MSG_GUI_SAVESTATES_HELP_STR "\x00\x00"
-    "\x00\x00\x01\xFA\x00\x14"
+    "\x00\x00\x01\xFA\x00\x22"
+    MSG_GUI_FORCELOWRES_HELP_STR "\x00"
+    "\x00\x00\x01\xFB\x00\x14"
     MSG_GUI_ABOUT_BTN_HELP_STR "\x00\x00"
-    "\x00\x00\x01\xFB\x00\x20"
+    "\x00\x00\x01\xFC\x00\x36"
     MSG_GUI_SAVE_BTN_HELP_STR "\x00"
-    "\x00\x00\x01\xFC\x00\x0E"
+    "\x00\x00\x01\xFD\x00\x0E"
     MSG_GUI_QUIT_BTN_HELP_STR "\x00\x00"
 };
 

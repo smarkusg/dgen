@@ -50,11 +50,13 @@ DBUG("*** START DGENGUI ***\n",NULL);
 	if(OpenLibs() == TRUE) {
 		struct DGenGUI *DGenG = IExec->AllocVecTags(sizeof(struct DGenGUI), AVT_ClearWithValue,NULL, TAG_END);
 
-		DGenG->myTT.romsdrawer = DupStr( ROMS, sizeof(ROMS) );
-		//DGenG->myTT.newttp = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
+		DGenG->myTT.romsdrawer   = DupStr( ROMS, sizeof(ROMS) );
+		//DGenG->myTT.newttp  = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
 		//DGenG->myTT.ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
 		//DGenG->myTT.ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
-		DGenG->myTT.show_hints = FALSE;
+		DGenG->myTT.dgensdl_exec = 1;
+		DGenG->myTT.show_hints   = FALSE;
+		//DGenG->myTT.force_lowres = 0;
 
 DBUG("wbs = 0x%08lx\n",wbs);
 		if(wbs) // launched from WB/icon
@@ -75,7 +77,7 @@ DBUG("wbs = 0x%08lx\n",wbs);
 				ttp = IIcon->FindToolType(micon->do_ToolTypes, "PUBSCREEN");
 				if(ttp)
 				{
-DBUG("SCREEN tooltype set to '%s'\n",ttp);
+DBUG("SCREEN tooltype is '%s'\n",ttp);
 					DGenG->screen = IIntuition->LockPubScreen(ttp);
 				}
 
@@ -85,13 +87,32 @@ DBUG("SCREEN tooltype set to '%s'\n",ttp);
 					FreeString(&DGenG->myTT.romsdrawer);
 					DGenG->myTT.romsdrawer = DupStr( ttp, IUtility->Strlen(ttp) );
 				}
-DBUG("ROMS_DRAWER set to '%s'\n",DGenG->myTT.romsdrawer);
+DBUG("ROMS_DRAWER tooltype is '%s'\n",DGenG->myTT.romsdrawer);
 
 				ttp = IIcon->FindToolType(micon->do_ToolTypes, "LAST_ROM_LAUNCHED");
 				if(ttp)
 				{
 					IDOS->StrToLong(ttp, &DGenG->myTT.last_rom_run);
-DBUG("LAST_ROM_LAUNCHED tooltype set to %ld\n",DGenG->myTT.last_rom_run);
+DBUG("LAST_ROM_LAUNCHED tooltype is %ld\n",DGenG->myTT.last_rom_run);
+				}
+
+				ttp = IIcon->FindToolType(micon->do_ToolTypes, "DGEN_SDL");
+				if(ttp)
+				{
+					//IDOS->StrToLong(ttp, &DGenG->myTT.dgensdl_exec);
+					DGenG->myTT.dgensdl_exec = ttp[0] - 0x30; // lazy way to convert 1 char -> int32
+					if(DGenG->myTT.dgensdl_exec != 2) { DGenG->myTT.dgensdl_exec = 1; }
+DBUG("DGEN_SDL tooltype is %ld\n",DGenG->myTT.dgensdl_exec);
+				}
+
+				ttp = IIcon->FindToolType(micon->do_ToolTypes, "FORCE_LOWRES");
+				//if(ttp) { DGenG->myTT.force_lowres = TRUE; }
+				if(ttp)
+				{
+					//IDOS->StrToLong(ttp, &DGenG->myTT.force_lowres);
+					DGenG->myTT.force_lowres = ttp[0] - 0x30; // lazy way to convert 1 char -> int32
+					if(DGenG->myTT.force_lowres<0  &&  DGenG->myTT.force_lowres>2) { DGenG->myTT.force_lowres = 0; }
+DBUG("FORCE_LOWRES tooltype is %ld\n",DGenG->myTT.force_lowres);
 				}
 
 				ttp = IIcon->FindToolType(micon->do_ToolTypes, "SHOW_HINTS");

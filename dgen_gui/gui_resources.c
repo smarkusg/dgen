@@ -30,14 +30,14 @@ struct LocaleIFace *ILocale = NULL;
 struct Library *ClickTabBase = NULL, *ListBrowserBase = NULL, *LayoutBase = NULL,
                *ChooserBase = NULL;
 // the class library base
-struct ClassLibrary *ButtonBase = NULL, *BitMapBase = NULL, *CheckBoxBase = NULL,
-                    *LabelBase = NULL, *WindowBase = NULL, *StringBase = NULL,
-                    *RequesterBase = NULL, *SpaceBase = NULL, *IntegerBase = NULL,
+struct ClassLibrary *ButtonBase = NULL, *BitMapBase = NULL, /*CheckBoxBase = NULL,*/
+                    *LabelBase = NULL, *WindowBase = NULL, /**StringBase = NULL,*/
+                    *RequesterBase = NULL, *SpaceBase = NULL, /**IntegerBase = NULL,*/
                     *GetFileBase = NULL;
 // the class pointer
-Class *ClickTabClass, *ListBrowserClass, *ButtonClass, *LabelClass, *StringClass,
-      *CheckBoxClass, *ChooserClass, *BitMapClass, *LayoutClass, *WindowClass,
-      *RequesterClass, *SpaceClass, *IntegerClass, *GetFileClass;
+Class /**ClickTabClass,*/ *ListBrowserClass, *ButtonClass, *LabelClass, /**StringClass,*/
+      /**CheckBoxClass,*/ *ChooserClass, *BitMapClass, *LayoutClass, *WindowClass,
+      *RequesterClass, *SpaceClass, /**IntegerClass,*/ *GetFileClass;
 // some interfaces needed
 struct ListBrowserIFace *IListBrowser = NULL;
 //struct ClickTabIFace *IClickTab = NULL;
@@ -78,7 +78,7 @@ DBUG("OpenLibs() - START\n",NULL);
 	IconBase = IExec->OpenLibrary("icon.library", 52);
 	IIcon = (struct IconIFace *)IExec->GetInterface(IconBase, "main", 1, NULL);
 
-	if(DOSBase==NULL  ||  UtilityBase==NULL  ||  IntuitionBase==NULL  ||  GfxBase==NULL
+	if(DOSBase==NULL  ||  UtilityBase==NULL  ||  IntuitionBase==NULL  /*||  GfxBase==NULL*/
 	   ||  LocaleBase==NULL  ||  IconBase==NULL) { return FALSE; }
 
 	RequesterBase = IIntuition->OpenClass("requester.class", 52, &RequesterClass);
@@ -377,10 +377,10 @@ DBUG("  %2ld'%s'\n",i,micon->do_ToolTypes[i]);
 						micon->do_ToolTypes = oldttp;
 DBUG("  Tooltype modified: '%s'\n",newttp);
 					}
-/*
+
 					// Special case tooltype (toggle/switch) -> 'tooltype' OR '(tooltype)'
 					// NOTE: if it doesn't exists it will be created as "enabled" -> 'tooltype'
-					if(!ttpArg)
+					/*if(!ttpArg)
 					{
 						oldttp = micon->do_ToolTypes;
 						if(IUtility->Stricmp(micon->do_ToolTypes[i],ttpBuf1) == 0) {
@@ -394,8 +394,8 @@ DBUG("  Tooltype modified: '%s'\n",newttp);
 						IIcon->PutDiskObject(iconname, micon);
 						micon->do_ToolTypes = oldttp;
 DBUG("  Tooltype toggled: '%s'\n",ttpBuf1);
-					}
-*/
+					}*/
+
 					break;
 				} // END if( !Strnicmp(micon->..
 			} // END for
@@ -469,20 +469,21 @@ void free_chooserlist_nodes(struct List *list)
 
 void GetSavestates(struct DGenGUI *dgg, STRPTR fn)
 {
-    APTR context;
-    struct Node *node;
-    STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_END),
-           pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_END);
-    int32 i = 0, j = 0;
+	APTR context;
+	struct Node *node;
+	STRPTR filestate = IExec->AllocVecTags(MAX_DOS_FILENAME, TAG_END),
+	       pattern_ms = IExec->AllocVecTags(2+MAX_DOS_FILENAME*2, TAG_END);
+	int32 i = 0, j = 0;
 DBUG("GetSavestates()\n",NULL);
-    //IUtility->Strlcpy(filestate, fn, MAX_DOS_FILENAME);
-    for(; i!=IUtility->Strlen(fn); ++i,++j) { // "neutralize" '( and ')' in ParsePatternNoCase()
-        if(fn[i]=='('  ||  fn[i]==')') { filestate[j++] = '\''; }
-        filestate[j] = fn[i];
-    }
-    filestate[j] = '\0';
-//DBUG("  [neutralized] %s\n",filestate);
-    IUtility->Strlcat(filestate, ".gs[0-9]", MAX_DOS_FILENAME);
+	// "Neutralize" '( ) [ ]' for ParsePatternNoCase()
+	for(; i!=IUtility->Strlen(fn); ++i,++j) {
+		if(fn[i]=='('  ||  fn[i]==')' ||
+		   fn[i]=='['  ||  fn[i]==']') { filestate[j++] = '\''; }
+		filestate[j] = fn[i];
+	}
+	filestate[j] = '\0';
+	//IUtility->Strlcpy(filestate, fn, MAX_DOS_FILENAME);
+	IUtility->Strlcat(filestate, ".gs[0-9]", MAX_DOS_FILENAME);
 DBUG("  searching \"%s\":\n",filestate);
 
 	// Detach chooser list
@@ -508,8 +509,9 @@ DBUG("  searching \"%s\":\n",filestate);
 			{
 				char slot[2] = "";
 DBUG("    '%s'\n",dat->Name);
+				// Only need the slot number (aka last char)
 				slot[0] = dat->Name[IUtility->Strlen(dat->Name)-1];
-DBUG("    slot #%s\n",slot); // only need the slot number (aka last char)
+DBUG("    slot #%s\n",slot);
 				node = IChooser->AllocChooserNode(CNA_CopyText,TRUE, CNA_Text,slot, TAG_DONE);
 				if(node) { IExec->AddTail(dgg->savestates_list, node); }
 			}
@@ -579,7 +581,8 @@ DBUG("LaunchRom()\n",NULL);
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_ROM, LBNCA_Text,&res_s, TAG_DONE );
 	IListBrowser->GetListBrowserNodeAttrs( (struct Node *)res_n, LBNA_Column,COL_FMT, LBNCA_Text,&res_e, TAG_DONE );
 DBUG("  res_n=0x%08lx -> res_s='%s' (res_e='%s')\n",res_n,res_s,res_e);
-	IUtility->Strlcpy(filename, ROMS, FILENAME_LENGTH);
+	//IUtility->Strlcpy(filename, ROMS, FILENAME_LENGTH);
+	IUtility->Strlcpy(filename, dgg->myTT.romsdrawer, FILENAME_LENGTH);
 	IUtility->Strlcat( rom_ext, res_e, sizeof(rom_ext) );
 
 	IDOS->AddPart(filename, ROMS, FILENAME_LENGTH);
