@@ -58,6 +58,10 @@ MSG_GUI_TOTALROMS
 %ld dostepne pliki rom
 ;  %ld roms availables
 ;
+MSG_GUI_FORCELOWRES_NO
+Nie
+;No
+;
 MSG_GUI_SAVESTATES
 Za³aduj zapisane sloty
 ;  Load saved slot
