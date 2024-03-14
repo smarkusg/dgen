@@ -1,21 +1,22 @@
-DGenGUI v1.1 (2024.03.02)
+DGenGUI v1.1 (2024.03.11)
 *************************
 
 USAGE:
 -Workbench icon:
 PUBSCREEN=<public_screen_name>: open on pubscreen. To create a public
 screen use 'SYS:Prefs/Screens'.
-ROMS_DRAWER=<path>: path with your Genesis/MD roms files.
+ROMS_DRAWER=<path>: path with Genesis/MD roms files.
 LAST_ROM_LAUNCHED=<value>: position in list of last launched ROM.
-SHOW_HINTS: show hint/help when mouse cursor over gadget.
-DGEN_SDL=1|2: \"version\" of DGen to use/launch by default.
+DGEN_SDL=1|2: "version" of DGen to use/launch by default.
+FORCE_LOWRES=<value>: force \"lowres\" selected/active (0: No).
+SHOW_HINTS: show hints/help when mouse cursor is over gadgets.
 
 -Keyboard handling:
 ESC quits DgenGUI.
 -Keyboard handling in GENERAL tab:
 Cursor Up/Down, Page Up/Down and Home/End keys to select ROM.
 Enter/Return to launch selected ROM.
-Keypress (A-Z) should go to a ROM starting with such letter/key pressed.
+Keypress (0-9/A-Z) should go to a ROM starting with such letter/key pressed.
 
 -Mouse usage:
 You can launch a ROM entry by double click on an entry or clicking in
@@ -26,7 +27,7 @@ TRANSLATORS:
 Polish catalog by Marek 'smarkusg' Glogowski.
 Italian catalog by Samir 'Samo79' Hawamdeh.
 Spanish catalog by Javier de las Rivas.
-German  catalog by Maijestro.
+
 
 SPECIAL THANKS:
 Maijestro and McFly for such great images.
@@ -43,4 +44,4 @@ Javier de las Rivas <jabierdlr@gmail.com>
 
 
 HISTORY:
-V1.1 (2024.03.02): first release
+V1.1 (2024.03.11): first release
