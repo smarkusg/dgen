@@ -87,7 +87,7 @@ DBUG("  load savestate %lc\n",savestate_str[0]);
 	//IIntuition->GetAttr(GA_Selected, OBJ(OID_FORCELOWRES), &res_val);
 	IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_FORCELOWRES), &res_val);
 	if(res_val != 0) {
-		int32 lowres[] = { 0, 224, 240 };
+		int32 lowres[] = { 0, 224, 240, 256 };
 //DBUG("  force 320x.256\n",NULL);
 		IUtility->SNPrintf(cmdline, CMDLINE_LENGTH, "%s -G 320x%ld",cmdline,lowres[res_val]);
 	}
@@ -332,29 +332,18 @@ DBUG("  Selected: [old]%ld == [new]%ld\n",res_prev,res_temp);
 					char tmp[2] = "";
 DBUG("  OID_SAVE: (0x%08lx)\n",dgg->wbs);
 					// ROMS_DRAWER
-					IIntuition->GetAttr(GETFILE_Drawer, OBJ(OID_ROMDRAWER), (uint32*)&res_str);
-DBUG("    ROMS_DRAWER '%s'\n",res_str);
-					SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "ROMS_DRAWER", res_str);
-					//FreeString(&dgg->myTT.romsdrawer);
-					//dgg->myTT.romsdrawer = DupStr(res_str, -1);
+DBUG("    ROMS_DRAWER '%s'\n",dgg->myTT.romsdrawer);
+					SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "ROMS_DRAWER", dgg->myTT.romsdrawer);
 					// DGEN_SDL
 					IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_DGENEXE), (uint32*)&(dgg->myTT.dgensdl_exec));
-					++res_value; // chooser is 0 or 1 -> saved value is 1 or 2
-//					if(res_value != dgg->myTT.dgensdl_exec) {
-//						dgg->myTT.dgensdl_exec = res_value;
-						tmp[0] = res_value + 0x30;
-DBUG("    DGEN_SDL '%s' (was:%ld)\n",tmp,dgg->myTT.dgensdl_exec);
-						SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "DGEN_SDL", tmp);
-//					}
+					tmp[0] = dgg->myTT.dgensdl_exec + 0x30 + 1;
+DBUG("    DGEN_SDL '%s' (%ld)\n",tmp,dgg->myTT.dgensdl_exec);
+					SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "DGEN_SDL", tmp);
 					// FORCE_LOWRES
-					//IIntuition->GetAttr(GA_Selected, OBJ(OID_FORCELOWRES), &res_value);
 					IIntuition->GetAttr(CHOOSER_Selected, OBJ(OID_FORCELOWRES), (uint32*)&(dgg->myTT.force_lowres));
-//					if(res_value != dgg->myTT.force_lowres) {
-//						dgg->myTT.force_lowres = res_value;
-						tmp[0] = dgg->myTT.force_lowres + 0x30;
-DBUG("    OID_FORCELOWRES '%s' (was:%ld)\n",tmp,dgg->myTT.force_lowres);
-						SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "FORCE_LOWRES", tmp);
-//					}
+					tmp[0] = dgg->myTT.force_lowres + 0x30;
+DBUG("    OID_FORCELOWRES '%s' (%ld)\n",tmp,dgg->myTT.force_lowres);
+					SaveToolType(dgg->wbs->sm_ArgList->wa_Name, "FORCE_LOWRES", tmp);
 				}
 				break;
 				case OID_QUIT:
@@ -393,7 +382,7 @@ void CreateGUIwindow(struct DGenGUI *dgg)
 	//struct Node *node;
 DBUG("CreateGUIwindow()\n",NULL);
 	STRPTR dgenexec_array[] = { "SDL1","SDL2", NULL },
-	       lowres_array[] = { NULL,"320x224 (NTSC)","320x240 (PAL)", NULL };
+	       lowres_array[] = { NULL,"320x224 (NTSC)","320x240 (PAL)","320x256 (Amiga)", NULL };
 	WORD max_w_ext = IGraphics->TextLength(&dgg->screen->RastPort, GetString(&li,MSG_GUI_TITLE_COL_FMT), IUtility->Strlen(GetString(&li,MSG_GUI_TITLE_COL_FMT))+1); // max rom extension pixel width
 
 	gAppPort = IExec->AllocSysObjectTags(ASOT_PORT, TAG_END);
@@ -425,6 +414,7 @@ DBUG("CreateGUIwindow()\n",NULL);
         WA_DepthGadget, TRUE,
         WA_Activate,    TRUE,
         WA_IDCMP, IDCMP_VANILLAKEY | IDCMP_RAWKEY,
+        dgg->myTT.guifade? WA_FadeTime : TAG_IGNORE, 500000, // duration of transition in microseconds
         WINDOW_IconifyGadget, TRUE,
         WINDOW_AppPort,       gAppPort,
         WINDOW_Icon,          dgg->iconify,
@@ -470,6 +460,7 @@ DBUG("CreateGUIwindow()\n",NULL);
           LAYOUT_AddChild, OBJ(OID_DGENEXE) = IIntuition->NewObject(ChooserClass, NULL,
             //GA_ID,         OID_DGENEXE,
             //GA_RelVerify,  TRUE,
+            //GA_Disabled,   dgg->myTT.dgensdl_exec==0? FALSE:TRUE,
             GA_Underscore, 0,
             GA_HintInfo,   GetString(&li, MSG_GUI_DGENEXEX_HELP),
             CHOOSER_LabelArray, dgenexec_array,

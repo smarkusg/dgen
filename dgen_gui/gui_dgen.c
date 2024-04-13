@@ -50,13 +50,14 @@ DBUG("*** START DGENGUI ***\n",NULL);
 	if(OpenLibs() == TRUE) {
 		struct DGenGUI *DGenG = IExec->AllocVecTags(sizeof(struct DGenGUI), AVT_ClearWithValue,NULL, TAG_END);
 
-		DGenG->myTT.romsdrawer   = DupStr( ROMS, sizeof(ROMS) );
+		DGenG->myTT.romsdrawer = DupStr( ROMS, sizeof(ROMS) );
 		//DGenG->myTT.newttp  = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
 		//DGenG->myTT.ttpBuf1 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
 		//DGenG->myTT.ttpBuf2 = IExec->AllocVecTags(MAX_DOS_PATH, AVT_ClearWithValue,NULL, TAG_END);
-		DGenG->myTT.dgensdl_exec = 1;
-		DGenG->myTT.show_hints   = FALSE;
+		//DGenG->myTT.dgensdl_exec = 1;
+		DGenG->myTT.show_hints = FALSE;
 		//DGenG->myTT.force_lowres = 0;
+		DGenG->myTT.guifade    = TRUE;
 
 DBUG("wbs = 0x%08lx\n",wbs);
 		if(wbs) // launched from WB/icon
@@ -102,11 +103,11 @@ DBUG("LAST_ROM_LAUNCHED tooltype is %ld\n",DGenG->myTT.last_rom_run);
 					//IDOS->StrToLong(ttp, &DGenG->myTT.dgensdl_exec);
 					DGenG->myTT.dgensdl_exec = ttp[0] - 0x30; // lazy way to convert 1 char -> int32
 					if(DGenG->myTT.dgensdl_exec != 2) { DGenG->myTT.dgensdl_exec = 1; }
+					//if(DGenG->myTT.dgensdl_exec!=1  &&  DGenG->myTT.dgensdl_exec != 2) { DGenG->myTT.dgensdl_exec = 0; }
 DBUG("DGEN_SDL tooltype is %ld\n",DGenG->myTT.dgensdl_exec);
 				}
 
 				ttp = IIcon->FindToolType(micon->do_ToolTypes, "FORCE_LOWRES");
-				//if(ttp) { DGenG->myTT.force_lowres = TRUE; }
 				if(ttp)
 				{
 					//IDOS->StrToLong(ttp, &DGenG->myTT.force_lowres);
@@ -117,6 +118,13 @@ DBUG("FORCE_LOWRES tooltype is %ld\n",DGenG->myTT.force_lowres);
 
 				ttp = IIcon->FindToolType(micon->do_ToolTypes, "SHOW_HINTS");
 				if(ttp) { DGenG->myTT.show_hints = TRUE; }
+
+				ttp = IIcon->FindToolType(micon->do_ToolTypes, "NO_GUI_FADE");
+				if(ttp)
+				{
+					DGenG->myTT.guifade = FALSE;
+DBUG("NO_GUI_FADE tooltype enabled.\n");
+				}
 
 				IIcon->FreeDiskObject(micon);
 			}

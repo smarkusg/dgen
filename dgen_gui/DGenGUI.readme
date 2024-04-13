@@ -1,48 +1,94 @@
-DGenGUI v1.1 (2024.03.11)
+name: Dgen SDL
+description: Emulator of the Sega Genesis/MegaDrive consoles
+version: 1.33
+author: Various
+submitter: Samir Hawamdeh
+url: https://github.com/smarkusg/dgen
+category: emulation/gamesystem
+replaces: emulation/gamesystem/dgen-sdl.lha
+requirements: AmigaOS 4.x + SDL1 or SDL2
+license: Other
+minosversion: 4.1
+distribute: yes
+fileid: 12861
+hend:
+
+
+---------------------------------------------------------------------
+WHAT IS THIS?
+---------------------------------------------------------------------
+This is DGen v1.33, the Sega Genesis MegaDrive emulator for AmigaOS4.
+The AmigaOS4 port was done by Marek 'smarkusg' Glogowski
+The GUI was created by Javier de las Rivas
+
+Keyboard handling of DGen:
+--------------------------
+F1   fullscreen / window mode
+F2   save game state
+F3   restore game state
+F12  make a screenshot, it wil be used as cover/preview for ROM if it is not set up
+
+
+DGenGUI v1.2 (2024.03.28)
 *************************
 
 USAGE:
--Workbench icon:
-PUBSCREEN=<public_screen_name>: open on pubscreen. To create a public
-screen use 'SYS:Prefs/Screens'.
-ROMS_DRAWER=<path>: path with Genesis/MD roms files.
-LAST_ROM_LAUNCHED=<value>: position in list of last launched ROM.
-DGEN_SDL=1|2: "version" of DGen to use/launch by default.
-FORCE_LOWRES=<value>: force \"lowres\" selected/active (0: No).
-SHOW_HINTS: show hints/help when mouse cursor is over gadgets.
+------
+- Workbench icon:
 
--Keyboard handling:
-ESC quits DgenGUI.
--Keyboard handling in GENERAL tab:
-Cursor Up/Down, Page Up/Down and Home/End keys to select ROM.
-Enter/Return to launch selected ROM.
-Keypress (0-9/A-Z) should go to a ROM starting with such letter/key pressed.
+PUBSCREEN=<public_screen_name>: open on pubscreen. To create a public screen use 'SYS:Prefs/Screens'
+ROMS_DRAWER=<path>: path with Genesis/MD roms files
+LAST_ROM_LAUNCHED=<value>: position in list of last launched ROM
+DGEN_SDL=1|2: "version" of DGen to use/launch by default
+SHOW_HINTS: show hints/help when mouse cursor is over gadgets
+FORCE_LOWRES=<value>: force "lowres" selected/active (0: No)
+NO_GUI_FADE: show fade effect at startup
 
--Mouse usage:
+Keyboard handling:
+------------------
+ESC quits DGenGUI
+
+
+Keyboard handling in GENERAL tab:
+---------------------------------
+Cursor Up/Down, Page Up/Down and Home/End keys to select ROM
+Enter/Return to launch selected ROM
+Keypress (0-9/A-Z) should go to a ROM starting with such letter/key pressed
+
+
+Mouse usage:
+------------
 You can launch a ROM entry by double click on an entry or clicking in
-the cover/image (it's a button).
+the cover/image (it's a button)
 
 
-TRANSLATORS:
-Polish catalog by Marek 'smarkusg' Glogowski.
-Italian catalog by Samir 'Samo79' Hawamdeh.
-Spanish catalog by Javier de las Rivas.
-German catalog by Rene 'Maijestro' Engel.
+Translators:
+------------
+Polish catalog by Marek 'smarkusg' Glogowski
+Italian catalog by Samir 'Samo79' Hawamdeh
+Spanish catalog by Javier de las Rivas
+German catalog by Rene 'Maijestro' Engel
 
 
-SPECIAL THANKS:
-Maijestro and McFly for such great images.
+Special thanks:
+---------------
+Maijestro and McFly for such great images
 Marek Glogowski for such great Genesis/MD port!!!
 
 
-TO-DO:
--Fix bugs.
--Ideas, suggestions...
+To-Do:
+------
+- Fix bugs
+- Ideas, suggestions...
 
 
-AUTHOR:
-Javier de las Rivas <jabierdlr@gmail.com>
+Author:
+-------
+Javier de las Rivas <jabierdlr()gmail.com>
 
 
-HISTORY:
+History:
+--------
+V1.2 (2024.03.28): added fade effect tooltype
+
 V1.1 (2024.03.11): first release

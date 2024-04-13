@@ -93,6 +93,7 @@ struct myToolTypes {
 	int32 dgensdl_exec; // DGEN_SDL=<value> (1|2)
 	int32 force_lowres; // FORCE_LOWRES=<value> (0|1|2)
 	//STRPTR newttp, ttpBuf1, ttpBuf2; // only needed if using SaveToolType()
+	BOOL guifade;       // NO_GUI_FADE
 };
 
 struct DGenGUI {
